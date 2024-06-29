@@ -54,7 +54,7 @@ namespace WebsiteSkills.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SkillsId,Nome,Dificuldade,Tempo,Descricao")] Skills skills)
+        public async Task<IActionResult> Create([Bind("SkillsId,Nome,Dificuldade,Tempo,Descricao,Imagem")] Skills skills)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace WebsiteSkills.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SkillsId,Nome,Dificuldade,Tempo,Descricao")] Skills skills)
+        public async Task<IActionResult> Edit(int id, [Bind("SkillsId,Nome,Dificuldade,Tempo,Descricao,Imagem")] Skills skills)
         {
             if (id != skills.SkillsId)
             {

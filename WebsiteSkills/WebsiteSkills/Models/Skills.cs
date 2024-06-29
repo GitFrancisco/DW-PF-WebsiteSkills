@@ -37,6 +37,16 @@ namespace WebsiteSkills.Models
         /// </summary>
         [Display(Name ="Descrição")]
         public string Descricao { get; set; }
+        
+        /// <summary>
+        /// Custo mensal associado à Skill
+        /// </summary>
+        public decimal Custo { get; set; }
+
+        /// <summary>
+        /// Imagem associada à Skill
+        /// </summary>
+        public string Imagem { get; set; }
 
         /// <summary>
         /// Lista de Subscrições associados à Skill
