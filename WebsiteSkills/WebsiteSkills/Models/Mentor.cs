@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 
 namespace WebsiteSkills.Models
 {
@@ -9,29 +9,15 @@ namespace WebsiteSkills.Models
     {
         public Mentor()
         {
-            ListaEnsina = new HashSet<Ensina>();
+            ListaSkills = new HashSet<Skills>();
         }
-
-        /// <summary>
-        /// Chave primária
-        /// </summary>
-        public int NumMentor { get; set; }
-
+        
         //*******************************************
         // Relações com outras tabelas - Foreign Keys
 
         /// <summary>
-        /// Chave forasteira "Skills"
-        /// </summary>
-        [ForeignKey(nameof(Skills))]
-        public int SkillsFK { get; set; }
-        public Skills Skills { get; set; }
-
-        /// <summary>
         /// Lista de Skills que o mentor ensina
         /// </summary>
-        public ICollection<Ensina> ListaEnsina { get; set; }
-        //*******************************************   
+        public ICollection<Skills> ListaSkills { get; set; }
     }
 }
-

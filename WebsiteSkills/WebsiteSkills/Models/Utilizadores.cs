@@ -2,6 +2,9 @@
 
 namespace WebsiteSkills.Models
 {
+    /// <summary>
+    /// Classe que representa os utilizadores
+    /// </summary>
     public class Utilizadores
     {
         /// <summary>
