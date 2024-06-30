@@ -54,12 +54,12 @@ namespace WebsiteSkills.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SkillsId,Nome,Dificuldade,Tempo,Descricao,Imagem")] Skills skills)
+        public async Task<IActionResult> Create([Bind("SkillsId,Nome,Dificuldade,Tempo,Descricao,Imagem,Custo")] Skills skills)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(skills);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); 
                 return RedirectToAction(nameof(Index));
             }
             return View(skills);

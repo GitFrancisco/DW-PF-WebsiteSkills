@@ -4,7 +4,7 @@ namespace WebsiteSkills.Models
 {
     public class Aluno : Utilizadores
     {
-        public Aluno()
+        public Aluno() 
         {
             ListaSubscricoes = new HashSet<Subscricoes>();
         }

@@ -9,7 +9,7 @@ namespace WebsiteSkills.Models
     [PrimaryKey(nameof(SkillsFK), nameof(AlunoFK))]
     public class Subscricoes
     {
-        /// <summary>
+        /// <summary> 
         /// Data em que foi efetuada a subscrição
         /// </summary>
         public DateTime dataSubscricao { get; set; }

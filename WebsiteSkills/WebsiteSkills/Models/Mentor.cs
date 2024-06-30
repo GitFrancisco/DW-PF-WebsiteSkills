@@ -3,7 +3,7 @@
 namespace WebsiteSkills.Models
 {
     /// <summary>
-    /// Classe que representa os mentores
+    /// Classe que representa os mentores 
     /// </summary>
     public class Mentor : Utilizadores
     {

@@ -6,7 +6,7 @@ namespace WebsiteSkills.Models
     /// <summary>
     /// Classe que representa os Recursos de cada Skill
     /// </summary>
-    public class Recurso
+    public class Recurso 
     {
         /// <summary>
         /// Chave Primária

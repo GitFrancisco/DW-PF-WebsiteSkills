@@ -43,7 +43,7 @@ namespace WebsiteSkills.Models
         /// </summary>
         public decimal Custo { get; set; }
 
-        /// <summary>
+        /// <summary> 
         /// Imagem associada à Skill
         /// </summary>
         public string Imagem { get; set; }
