@@ -33,11 +33,9 @@ namespace WebsiteSkills.Models
         /// <summary>
         /// Chave forasteira "Skills"
         /// </summary>
+        [Required]
         [ForeignKey(nameof(Skill))]
         public int SkillsFK { get; set; }
         public Skills Skill { get; set; }
-
-        // *******************************************
-
     }
 }

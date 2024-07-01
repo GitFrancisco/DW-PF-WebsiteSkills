@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebsiteSkills.Data;
 
@@ -11,16 +12,33 @@ using WebsiteSkills.Data;
 namespace WebsiteSkills.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240701155421_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MentorSkills", b =>
+                {
+                    b.Property<int>("ListaMentoresId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ListaSkillsSkillsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ListaMentoresId", "ListaSkillsSkillsId");
+
+                    b.HasIndex("ListaSkillsSkillsId");
+
+                    b.ToTable("MentorSkills");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -224,41 +242,6 @@ namespace WebsiteSkills.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WebsiteSkills.Models.Ensina", b =>
-                {
-                    b.Property<int>("SkillsFK")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MentorFK")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MentorId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SkillsFK", "MentorFK");
-
-                    b.HasIndex("MentorFK");
-
-                    b.HasIndex("MentorId");
-
-                    b.ToTable("Ensina");
-                });
-
-            modelBuilder.Entity("WebsiteSkills.Models.Ofere", b =>
-                {
-                    b.Property<int>("SkillsFK")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubscricaoFK")
-                        .HasColumnType("int");
-
-                    b.HasKey("SkillsFK", "SubscricaoFK");
-
-                    b.HasIndex("SubscricaoFK");
-
-                    b.ToTable("Ofere");
-                });
-
             modelBuilder.Entity("WebsiteSkills.Models.Recurso", b =>
                 {
                     b.Property<int>("IdRecurso")
@@ -297,6 +280,9 @@ namespace WebsiteSkills.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SkillsId"));
 
+                    b.Property<decimal>("Custo")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -305,17 +291,13 @@ namespace WebsiteSkills.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Imagem")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SkillsFK")
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
-
-                    b.Property<int>("SubscricaoFK")
-                        .HasColumnType("int")
-                        .HasColumnOrder(2);
 
                     b.Property<int>("Tempo")
                         .HasColumnType("int");
@@ -325,25 +307,22 @@ namespace WebsiteSkills.Migrations
                     b.ToTable("Skills");
                 });
 
-            modelBuilder.Entity("WebsiteSkills.Models.Subscricao", b =>
+            modelBuilder.Entity("WebsiteSkills.Models.Subscricoes", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("SkillsFK")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AlunoFK")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<DateTime>("dataSubscricao")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("SkillsFK", "AlunoFK");
 
                     b.HasIndex("AlunoFK");
 
-                    b.ToTable("Subscricao");
+                    b.ToTable("Subscricoes");
                 });
 
             modelBuilder.Entity("WebsiteSkills.Models.Utilizadores", b =>
@@ -376,10 +355,7 @@ namespace WebsiteSkills.Migrations
                 {
                     b.HasBaseType("WebsiteSkills.Models.Utilizadores");
 
-                    b.Property<DateTime>("DataInscricao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdAluno")
+                    b.Property<int>("NumAluno")
                         .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Aluno");
@@ -389,15 +365,22 @@ namespace WebsiteSkills.Migrations
                 {
                     b.HasBaseType("WebsiteSkills.Models.Utilizadores");
 
-                    b.Property<int>("NumMentor")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SkillsFK")
-                        .HasColumnType("int");
-
-                    b.HasIndex("SkillsFK");
-
                     b.HasDiscriminator().HasValue("Mentor");
+                });
+
+            modelBuilder.Entity("MentorSkills", b =>
+                {
+                    b.HasOne("WebsiteSkills.Models.Mentor", null)
+                        .WithMany()
+                        .HasForeignKey("ListaMentoresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebsiteSkills.Models.Skills", null)
+                        .WithMany()
+                        .HasForeignKey("ListaSkillsSkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -451,41 +434,18 @@ namespace WebsiteSkills.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebsiteSkills.Models.Ensina", b =>
+            modelBuilder.Entity("WebsiteSkills.Models.Recurso", b =>
                 {
-                    b.HasOne("WebsiteSkills.Models.Mentor", "Mentor")
-                        .WithMany()
-                        .HasForeignKey("MentorFK")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WebsiteSkills.Models.Mentor", null)
-                        .WithMany("ListaEnsina")
-                        .HasForeignKey("MentorId");
-
                     b.HasOne("WebsiteSkills.Models.Skills", "Skills")
-                        .WithMany("ListaEnsina")
-                        .HasForeignKey("SkillsFK")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Mentor");
-
-                    b.Navigation("Skills");
-                });
-
-            modelBuilder.Entity("WebsiteSkills.Models.Ofere", b =>
-                {
-                    b.HasOne("WebsiteSkills.Models.Skills", "Skill")
                         .WithMany("ListaRecursos")
                         .HasForeignKey("SkillsFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Skill");
+                    b.Navigation("Skills");
                 });
 
-            modelBuilder.Entity("WebsiteSkills.Models.Subscricao", b =>
+            modelBuilder.Entity("WebsiteSkills.Models.Subscricoes", b =>
                 {
                     b.HasOne("WebsiteSkills.Models.Aluno", "Aluno")
                         .WithMany("ListaSubscricoes")
@@ -493,35 +453,27 @@ namespace WebsiteSkills.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Aluno");
-                });
-
-            modelBuilder.Entity("WebsiteSkills.Models.Mentor", b =>
-                {
                     b.HasOne("WebsiteSkills.Models.Skills", "Skills")
-                        .WithMany()
+                        .WithMany("ListaSubscricoes")
                         .HasForeignKey("SkillsFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Aluno");
 
                     b.Navigation("Skills");
                 });
 
             modelBuilder.Entity("WebsiteSkills.Models.Skills", b =>
                 {
-                    b.Navigation("ListaEnsina");
-
                     b.Navigation("ListaRecursos");
+
+                    b.Navigation("ListaSubscricoes");
                 });
 
             modelBuilder.Entity("WebsiteSkills.Models.Aluno", b =>
                 {
                     b.Navigation("ListaSubscricoes");
-                });
-
-            modelBuilder.Entity("WebsiteSkills.Models.Mentor", b =>
-                {
-                    b.Navigation("ListaEnsina");
                 });
 #pragma warning restore 612, 618
         }
