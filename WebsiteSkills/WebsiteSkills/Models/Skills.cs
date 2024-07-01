@@ -46,7 +46,9 @@ namespace WebsiteSkills.Models
         /// <summary> 
         /// Imagem associada à Skill
         /// </summary>
-        public string Imagem { get; set; }
+        [StringLength(50)] // define o tamanho máximo como 50 caracteres
+        // "?" torna o atributo facultativo
+        public string? Imagem { get; set; }
 
         /// <summary>
         /// Lista de Subscrições associados à Skill
