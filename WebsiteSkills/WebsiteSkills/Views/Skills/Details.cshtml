@@ -1,0 +1,54 @@
+﻿@model WebsiteSkills.Models.Skills
+
+@{
+    ViewData["Title"] = "Detalhes";
+}
+
+<h1>Detalhes</h1>
+
+<div>
+    <h4>Skills</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Dificuldade)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Dificuldade)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Tempo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Tempo)
+        </dd> 
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Descricao)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Descricao)
+        </dd>        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Custo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Custo)
+        </dd>        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Imagem)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Imagem)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.SkillsId">Editar</a> |
+    <a asp-action="Index">Voltar à lista de Skills</a>
+</div>

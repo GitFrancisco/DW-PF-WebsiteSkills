@@ -6,14 +6,13 @@ namespace WebsiteSkills.Models
     /// <summary>
     /// Classe que representa os Recursos de cada Skill
     /// </summary>
-    public class Recurso
+    public class Recurso 
     {
         /// <summary>
         /// Chave Primária
         /// </summary>
         [Key] // Primary Key - Recurso
         public int IdRecurso { get; set; }
-
         /// <summary>
         /// Nome do Recurso
         /// </summary>
@@ -33,11 +32,9 @@ namespace WebsiteSkills.Models
         /// <summary>
         /// Chave forasteira "Skills"
         /// </summary>
-        [ForeignKey(nameof(Skill))]
+        [Required]
+        [ForeignKey(nameof(Skills))]
         public int SkillsFK { get; set; }
-        public Skills Skill { get; set; }
-
-        // *******************************************
-
+        public Skills Skills { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebsiteSkills.Data;
 
@@ -11,9 +12,11 @@ using WebsiteSkills.Data;
 namespace WebsiteSkills.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240629171533_ImagemSkills")]
+    partial class ImagemSkills
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -277,9 +280,6 @@ namespace WebsiteSkills.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SkillsId"));
 
-                    b.Property<decimal>("Custo")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -289,8 +289,8 @@ namespace WebsiteSkills.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Imagem")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
                         .IsRequired()

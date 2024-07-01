@@ -1,0 +1,68 @@
+﻿@model IEnumerable<WebsiteSkills.Models.Skills>
+
+@{
+    ViewData["Title"] = "Índice";
+}
+
+<h1>Índice</h1>
+
+<p>
+    <a asp-action="Create">Criar nova Skill</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Dificuldade)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tempo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descricao)
+            </th>              
+            <th> 
+                @Html.DisplayNameFor(model => model.Custo)
+            </th>            
+            <th>
+                @Html.DisplayNameFor(model => model.Imagem)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dificuldade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tempo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descricao)
+            </td>            
+            <td>
+                @Html.DisplayFor(modelItem => item.Custo)
+            </td>
+            <td>
+                    <img src="~/Imagens/@Html.DisplayFor(modelItem => item.Imagem)"
+                         alt="Imagem da Skill @Html.DisplayFor(modelItem => item.Nome)"
+                         title="@Html.DisplayFor(modelItem => item.Nome)"
+                         width="150px" />
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.SkillsId">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.SkillsId">Detalhes</a> |
+                <a asp-action="Delete" asp-route-id="@item.SkillsId">Apagar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
