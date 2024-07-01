@@ -52,7 +52,10 @@
                 @Html.DisplayFor(modelItem => item.Custo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Imagem)
+                    <img src="~/Imagens/@Html.DisplayFor(modelItem => item.Imagem)"
+                         alt="Imagem da Skill @Html.DisplayFor(modelItem => item.Nome)"
+                         title="@Html.DisplayFor(modelItem => item.Nome)"
+                         width="150px" />
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.SkillsId">Editar</a> |
