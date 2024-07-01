@@ -12,8 +12,8 @@ using WebsiteSkills.Data;
 namespace WebsiteSkills.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240629162618_initialMig")]
-    partial class initialMig
+    [Migration("20240701170224_EdicaoRecurso")]
+    partial class EdicaoRecurso
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -280,6 +280,9 @@ namespace WebsiteSkills.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SkillsId"));
 
+                    b.Property<decimal>("Custo")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -287,6 +290,10 @@ namespace WebsiteSkills.Migrations
                     b.Property<string>("Dificuldade")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Imagem")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -429,13 +436,13 @@ namespace WebsiteSkills.Migrations
 
             modelBuilder.Entity("WebsiteSkills.Models.Recurso", b =>
                 {
-                    b.HasOne("WebsiteSkills.Models.Skills", "Skills")
+                    b.HasOne("WebsiteSkills.Models.Skills", "Skill")
                         .WithMany("ListaRecursos")
                         .HasForeignKey("SkillsFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Skills");
+                    b.Navigation("Skill");
                 });
 
             modelBuilder.Entity("WebsiteSkills.Models.Subscricoes", b =>

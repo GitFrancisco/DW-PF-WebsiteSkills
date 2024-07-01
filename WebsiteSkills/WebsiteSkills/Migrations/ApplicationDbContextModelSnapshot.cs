@@ -248,7 +248,6 @@ namespace WebsiteSkills.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRecurso"));
 
                     b.Property<string>("ConteudoRecurso")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NomeRecurso")
@@ -430,30 +429,8 @@ namespace WebsiteSkills.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-            modelBuilder.Entity("WebsiteSkills.Models.Ensina", b =>
-                {
-                    b.HasOne("WebsiteSkills.Models.Mentor", "Mentor")
-                        .WithMany()
-                        .HasForeignKey("MentorFK")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
 
-                    b.HasOne("WebsiteSkills.Models.Mentor", null)
-                        .WithMany("ListaEnsina")
-                        .HasForeignKey("MentorId");
-
-                    b.HasOne("WebsiteSkills.Models.Skills", "Skills")
-                        .WithMany("ListaEnsina")
-                        .HasForeignKey("SkillsFK")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Mentor");
-
-                    b.Navigation("Skills");
-                });
-
-            modelBuilder.Entity("WebsiteSkills.Models.Ofere", b =>
+            modelBuilder.Entity("WebsiteSkills.Models.Recurso", b =>
                 {
                     b.HasOne("WebsiteSkills.Models.Skills", "Skill")
                         .WithMany("ListaRecursos")
@@ -461,7 +438,7 @@ namespace WebsiteSkills.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Skills");
+                    b.Navigation("Skill");
                 });
 
             modelBuilder.Entity("WebsiteSkills.Models.Subscricoes", b =>

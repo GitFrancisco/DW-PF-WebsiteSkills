@@ -18,13 +18,9 @@
                 <span asp-validation-for="NomeRecurso" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ConteudoRecurso" class="control-label"></label>
-                <input asp-for="ConteudoRecurso" class="form-control" />
-                <span asp-validation-for="ConteudoRecurso" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="TipoRecurso" class="control-label"></label>
-                <input asp-for="TipoRecurso" class="form-control" />
+                @*Dropdown para selecionar o tipo de recurso a utilizar*@
+                <select asp-for="TipoRecurso" class="form-control" asp-items="@(ViewBag.TipoRecursoOptions)"></select>
                 <span asp-validation-for="TipoRecurso" class="text-danger"></span>
             </div>
             <div class="form-group">

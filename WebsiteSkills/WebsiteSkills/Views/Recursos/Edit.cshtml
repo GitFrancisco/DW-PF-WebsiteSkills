@@ -20,18 +20,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="ConteudoRecurso" class="control-label"></label>
-                <input asp-for="ConteudoRecurso" class="form-control" />
-                <span asp-validation-for="ConteudoRecurso" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TipoRecurso" class="control-label"></label>
-                <input asp-for="TipoRecurso" class="form-control" />
-                <span asp-validation-for="TipoRecurso" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SkillsFK" class="control-label"></label>
-                <select asp-for="SkillsFK" class="form-control" asp-items="ViewBag.SkillsFK"></select>
-                <span asp-validation-for="SkillsFK" class="text-danger"></span>
+                @if(ViewBag.TipoRecursoAtual == "PDF")
+                {
+                    <input type="file" name="PdfRecurso" accept=".pdf" class="form-control" />
+                }
+                else if (ViewBag.TipoRecursoAtual == "Imagem")
+                {
+                    <input type="file" name="ImagemRecurso" accept=".png,.jpg,.jpeg" class="form-control" />
+                } else
+                {
+                    <input asp-for="ConteudoRecurso" class="form-control" />
+                }
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

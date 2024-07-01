@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebsiteSkills.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMig : Migration
+    public partial class EdicaoRecurso : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,7 +59,9 @@ namespace WebsiteSkills.Migrations
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Dificuldade = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Tempo = table.Column<int>(type: "int", nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Custo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Imagem = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {

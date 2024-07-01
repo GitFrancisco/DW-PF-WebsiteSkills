@@ -49,6 +49,16 @@ namespace WebsiteSkills.Controllers
         public IActionResult Create()
         {
             ViewData["SkillsFK"] = new SelectList(_context.Skills, "SkillsId", "Nome");
+            // Cria uma lista de opções para o atributo "TipoRecurso"
+            // Os utilizadores podem escolher entre "PDF", "Imagem" e "Texto"
+            // Em que podem ser guardados (no disco rígido) os PDFs e imagens e o texto é diretamente inserido na BD.
+            ViewBag.TipoRecursoOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "PDF", Text = "PDF" },
+                new SelectListItem { Value = "Imagem", Text = "Imagem" },
+                new SelectListItem { Value = "Texto", Text = "Texto" }
+            };
+
             return View();
         }
 
@@ -61,6 +71,8 @@ namespace WebsiteSkills.Controllers
         {
             // Remove o atributo "Skill" do ModelState
             ModelState.Remove("Skill");
+            // Remove o atributo "ConteudoRecurso" do ModelState
+            ModelState.Remove("ConteudoRecurso");
 
             if (ModelState.IsValid)
             {
@@ -70,6 +82,12 @@ namespace WebsiteSkills.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["SkillsFK"] = new SelectList(_context.Skills, "SkillsId", "Nome", recurso.SkillsFK);
+            ViewBag.TipoRecursoOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "PDF", Text = "PDF" },
+                new SelectListItem { Value = "Imagem", Text = "Imagem" },
+                new SelectListItem { Value = "Texto", Text = "Texto" }
+            };
             return View(recurso);
         }
 
@@ -86,7 +104,8 @@ namespace WebsiteSkills.Controllers
             {
                 return NotFound();
             }
-            ViewData["SkillsFK"] = new SelectList(_context.Skills, "SkillsId", "SkillsId", recurso.SkillsFK);
+
+            ViewBag.TipoRecursoAtual = recurso.TipoRecurso;
             return View(recurso);
         }
 
@@ -95,17 +114,37 @@ namespace WebsiteSkills.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdRecurso,NomeRecurso,ConteudoRecurso,TipoRecurso,SkillsFK")] Recurso recurso)
+        public async Task<IActionResult> Edit(int id, [Bind("IdRecurso,NomeRecurso,ConteudoRecurso")] Recurso recurso)
         {
             if (id != recurso.IdRecurso)
             {
                 return NotFound();
             }
+            // Remove o atributo "TipoRecurso" do ModelState
+            ModelState.Remove("TipoRecurso");
+            // Remove o atributo "Skill" do ModelState
+            ModelState.Remove("Skill");
+            // Remove o atributo "SkillsFK" do ModelState
+            ModelState.Remove("SkillsFK");
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Procura o recurso na BD
+                    var existingRecurso = await _context.Recurso.Include(r => r.Skill).FirstOrDefaultAsync(r => r.IdRecurso == id);
+                    if (existingRecurso == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Mantém os valores não editáveis
+                    recurso.TipoRecurso = existingRecurso.TipoRecurso;
+                    recurso.SkillsFK = existingRecurso.SkillsFK;
+                    recurso.Skill = existingRecurso.Skill;
+
+                    // Atualiza o recurso
+                    _context.Entry(existingRecurso).State = EntityState.Detached;
                     _context.Update(recurso);
                     await _context.SaveChangesAsync();
                 }
@@ -122,9 +161,9 @@ namespace WebsiteSkills.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SkillsFK"] = new SelectList(_context.Skills, "SkillsId", "SkillsId", recurso.SkillsFK);
             return View(recurso);
         }
+
 
         // GET: Recursos/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -5,16 +5,15 @@
 namespace WebsiteSkills.Migrations
 {
     /// <inheritdoc />
-    public partial class teste : Migration
+    public partial class facultativoConteudoRecurso : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Imagem",
-                table: "Skills",
-                type: "nvarchar(50)",
-                maxLength: 50,
+                name: "ConteudoRecurso",
+                table: "Recurso",
+                type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
@@ -24,14 +23,13 @@ namespace WebsiteSkills.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Imagem",
-                table: "Skills",
+                name: "ConteudoRecurso",
+                table: "Recurso",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "",
                 oldClrType: typeof(string),
-                oldType: "nvarchar(50)",
-                oldMaxLength: 50,
+                oldType: "nvarchar(max)",
                 oldNullable: true);
         }
     }
