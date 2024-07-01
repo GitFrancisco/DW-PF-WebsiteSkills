@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebsiteSkills.Data;
 
@@ -11,9 +12,11 @@ using WebsiteSkills.Data;
 namespace WebsiteSkills.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240630195025_teste")]
+    partial class teste
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -430,32 +433,10 @@ namespace WebsiteSkills.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-            modelBuilder.Entity("WebsiteSkills.Models.Ensina", b =>
+
+            modelBuilder.Entity("WebsiteSkills.Models.Recurso", b =>
                 {
-                    b.HasOne("WebsiteSkills.Models.Mentor", "Mentor")
-                        .WithMany()
-                        .HasForeignKey("MentorFK")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WebsiteSkills.Models.Mentor", null)
-                        .WithMany("ListaEnsina")
-                        .HasForeignKey("MentorId");
-
                     b.HasOne("WebsiteSkills.Models.Skills", "Skills")
-                        .WithMany("ListaEnsina")
-                        .HasForeignKey("SkillsFK")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Mentor");
-
-                    b.Navigation("Skills");
-                });
-
-            modelBuilder.Entity("WebsiteSkills.Models.Ofere", b =>
-                {
-                    b.HasOne("WebsiteSkills.Models.Skills", "Skill")
                         .WithMany("ListaRecursos")
                         .HasForeignKey("SkillsFK")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -1,33 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 
 namespace WebsiteSkills.Models
 {
-    /// <summary>
-    ///  Classe que representa os alunos
-    /// </summary>
     public class Aluno : Utilizadores
     {
-        public Aluno()
+        public Aluno() 
         {
-            ListaSubscricoes = new HashSet<Subscricao>();
+            ListaSubscricoes = new HashSet<Subscricoes>();
         }
 
         /// <summary>
-        /// Chave primária
+        /// Número de aluno
         /// </summary>
-        public int IdAluno { get; set; }
-        /// <summary>
-        /// Data de Inscrição
-        /// </summary>
-        public DateTime DataInscricao { get; set; }
-        //*******************************************
+        public int NumAluno { get; set; }
+
         // Relações com outras tabelas - Foreign Key
 
-        // Relacionamento 1-N com a tabela "Subscricao"
         /// <summary>
         /// Lista de subscrições do aluno
         /// </summary>
-        public ICollection<Subscricao> ListaSubscricoes { get; set; }
-        //*******************************************
+        public ICollection<Subscricoes> ListaSubscricoes { get; set; }
     }
 }
