@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<WebsiteSkills.Models.Recurso>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Índice";
 }
 
-<h1>Index</h1>
+<h1>Índice</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Criar novo Recurso</a>
 </p>
 <table class="table">
     <thead>
@@ -43,9 +43,9 @@
                 @Html.DisplayFor(modelItem => item.Skill.Nome)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdRecurso">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdRecurso">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdRecurso">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.IdRecurso">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.IdRecurso">Detalhes</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdRecurso">Apagar</a>
             </td>
         </tr>
 }
