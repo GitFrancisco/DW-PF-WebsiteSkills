@@ -201,11 +201,13 @@ namespace WebsiteSkills.Controllers
                                 recurso.ConteudoRecurso = nomeFicheiro;
 
                                 // Apagar o ficheiro antigo
+                                if (existingRecurso.ConteudoRecurso != null) {
                                 var FicheiroApagar = Path.Combine(_webHostEnvironment.WebRootPath, "FicheirosRecursos", existingRecurso.ConteudoRecurso);
                                 // Se o ficheiro existir, apaga-o
-                                if (System.IO.File.Exists(FicheiroApagar) && existingRecurso.ConteudoRecurso != null)
-                                {
-                                    System.IO.File.Delete(FicheiroApagar);
+                                    if (System.IO.File.Exists(FicheiroApagar))
+                                    {
+                                        System.IO.File.Delete(FicheiroApagar);
+                                    }
                                 }
                             }
                         }
