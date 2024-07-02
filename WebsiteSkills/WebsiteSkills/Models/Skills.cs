@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebsiteSkills.Models
 {
@@ -37,7 +38,12 @@ namespace WebsiteSkills.Models
         /// </summary>
         [Display(Name ="Descrição")]
         public string Descricao { get; set; }
-        
+
+        [NotMapped]
+        [Display(Name = "Custo")]
+        [RegularExpression("^-?\\d+(?:[\\.,]\\d+)?$",
+        ErrorMessage = "Só aceita números separados por pontos ou virgulas.")]
+        public string CustoAux {  get; set; } 
         /// <summary>
         /// Custo mensal associado à Skill
         /// </summary>
