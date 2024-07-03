@@ -1,16 +1,16 @@
 ﻿@model WebsiteSkills.Models.Recurso
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar";
 }
 
-<h1>Edit</h1>
+<h1>Editar</h1>
 
 <h4>Recurso</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdRecurso" />
             <div class="form-group">
@@ -20,28 +20,27 @@
             </div>
             <div class="form-group">
                 <label asp-for="ConteudoRecurso" class="control-label"></label>
-                <input asp-for="ConteudoRecurso" class="form-control" />
-                <span asp-validation-for="ConteudoRecurso" class="text-danger"></span>
+                @if(ViewBag.TipoRecursoAtual == "PDF")
+                {
+                    <input type="file" name="FicheiroRecurso" accept=".pdf" class="form-control" />
+                }
+                else if (ViewBag.TipoRecursoAtual == "Imagem")
+                {
+                    <input type="file" name="FicheiroRecurso" accept=".png,.jpg,.jpeg" class="form-control" />
+                } else
+                {
+                    <input type="text" name="TextoRecurso" class="form-control" />
+                }
             </div>
             <div class="form-group">
-                <label asp-for="TipoRecurso" class="control-label"></label>
-                <input asp-for="TipoRecurso" class="form-control" />
-                <span asp-validation-for="TipoRecurso" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SkillsFK" class="control-label"></label>
-                <select asp-for="SkillsFK" class="form-control" asp-items="ViewBag.SkillsFK"></select>
-                <span asp-validation-for="SkillsFK" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar à lista de Skills</a>
 </div>
 
 @section Scripts {

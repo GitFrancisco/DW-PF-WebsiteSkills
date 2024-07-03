@@ -12,8 +12,8 @@ using WebsiteSkills.Data;
 namespace WebsiteSkills.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240701161108_MudancaRecurso")]
-    partial class MudancaRecurso
+    [Migration("20240701170224_EdicaoRecurso")]
+    partial class EdicaoRecurso
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

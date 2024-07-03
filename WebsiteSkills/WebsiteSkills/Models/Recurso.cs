@@ -16,14 +16,18 @@ namespace WebsiteSkills.Models
         /// <summary>
         /// Nome do Recurso
         /// </summary>
+        [Display(Name = "Nome do Recurso")]
         public string NomeRecurso { get; set; }
         /// <summary>
         /// Conteúdo do Recurso
         /// </summary>
-        public string ConteudoRecurso { get; set; }
+        [Display(Name = "Conteúdo do Recurso")]
+        // "?" torna o atributo facultativo
+        public string? ConteudoRecurso { get; set; }
         /// <summary>
         /// Tipo de dados do Recurso
         /// </summary>
+        [Display(Name = "Tipo de Recurso")]
         public string TipoRecurso { get; set; }
 
         // *******************************************
@@ -34,6 +38,7 @@ namespace WebsiteSkills.Models
         /// </summary>
         [Required]
         [ForeignKey(nameof(Skill))]
+        [Display(Name = "Skill associada ao Recurso")]
         public int SkillsFK { get; set; }
         public Skills Skill { get; set; }
     }

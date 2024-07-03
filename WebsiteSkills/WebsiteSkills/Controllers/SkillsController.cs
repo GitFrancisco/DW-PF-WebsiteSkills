@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebsiteSkills.Data;
+using WebsiteSkills.Migrations;
 using WebsiteSkills.Models;
 
 namespace WebsiteSkills.Controllers
@@ -59,13 +60,15 @@ namespace WebsiteSkills.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nome,Dificuldade,Tempo,Descricao,Custo")] Skills skills, IFormFile ImagemSkill)
+        public async Task<IActionResult> Create([Bind("Nome,Dificuldade,Tempo,Descricao,CustoAux,Custo")] Skills skills, IFormFile ImagemSkill)
         {
             // Variáveis Auxiliares
             // utilizada para guardar o nome da imagem
             string nomeImagem = "";
             // utilizada para controlar se há um imagem
             bool existeImagem = false;
+            // transferir o valor de CustoAux para Custo
+            skills.Custo = Convert.ToDecimal(skills.CustoAux.Replace('.', ','));
 
             // Se não guarda a imagem, devolve à View
             if (ImagemSkill == null)
@@ -155,7 +158,10 @@ namespace WebsiteSkills.Controllers
             if (skills == null)
             {
                 return NotFound();
+
             }
+            //Passar o dado do custo para a View
+            ViewBag.CustoAtual = skills.Custo;
             return View(skills);
         }
 
@@ -164,19 +170,87 @@ namespace WebsiteSkills.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SkillsId,Nome,Dificuldade,Tempo,Descricao,Imagem")] Skills skills)
+        public async Task<IActionResult> Edit(int id, [Bind("SkillsId,Nome,Dificuldade,Tempo,Descricao,Custo,CustoAux")] Skills skills, IFormFile ImagemSkill)
         {
             if (id != skills.SkillsId)
             {
                 return NotFound();
             }
 
+            // Variáveis Auxiliares
+            // utilizada para guardar o nome da imagem
+            string nomeImagem = "";
+            // utilizada para controlar se há um imagem
+            bool existeImagem = false;
+            // transferir o valor de CustoAux para Custo
+            skills.Custo = Convert.ToDecimal(skills.CustoAux.Replace('.', ','));
+
+            // Se não guarda a imagem, devolve à View
+            if (ImagemSkill == null)
+            {
+                //A skill que esta a ser editada recebe os valores que tinha anteriormente
+                var existingSkill = await _context.Skills.FindAsync(id);
+                if (existingSkill != null)
+                {
+                    //substitui a imagem que esta a ser editada pela que já existe
+                    skills.Imagem = existingSkill.Imagem;
+                    ModelState.Remove("ImagemSkill");
+                    _context.Entry(existingSkill).State = EntityState.Detached;
+                }
+            }
+
+            // Neste caso, existe ficheiro mas temos de confirmar se é uma imagem
+            else
+            {
+                // Verifica se o ficheiro é dos tipos aceites (PNG, JPG e JPEG)
+                if (!(ImagemSkill.ContentType == "image/png" || ImagemSkill.ContentType == "image/jpg" ||
+                       ImagemSkill.ContentType == "image/jpeg"))
+                {
+                    // Devolve o controlo à View
+                    ModelState.AddModelError("",
+                   "A imagem tem de ser do tipo: PNG, JPG ou JPEG.");
+                    return View(skills);
+                }
+                // Aqui, significa que há ficheiro e é uma imagem
+                else
+                {
+                    // A variável de controlo existeImagem passa a ser verdadeira
+                    existeImagem = true;
+                    // Obter o nome aleatório e único para a imagem
+                    Guid uid = Guid.NewGuid();
+                    nomeImagem = uid.ToString();
+                    // Obtém a extensão da imagem enviada
+                    string extensao = Path.GetExtension(ImagemSkill.FileName);
+                    // Adicionar a extensão ao nome da imagem
+                    nomeImagem += extensao;
+                    // Adicionar o nome do ficheiro ao objeto enviado
+                    skills.Imagem = nomeImagem;
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                     //manda os dados para a BD
                     _context.Update(skills);
                     await _context.SaveChangesAsync();
+
+                    // Se existe imagem, guardar a imagem no disco rígido do servidor
+                    if (existeImagem)
+                    {
+                        string PastaImagens = Path.Combine(_webHostEnvironment.WebRootPath, "Imagens");
+
+                        if (!Directory.Exists(PastaImagens))
+                        {
+                            Directory.CreateDirectory(PastaImagens);
+                        }
+
+                        string nomeFinalImagem = Path.Combine(PastaImagens, nomeImagem);
+
+                        using var stream = new FileStream(nomeFinalImagem, FileMode.Create);
+                        await ImagemSkill.CopyToAsync(stream);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {

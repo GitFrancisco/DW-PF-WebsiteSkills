@@ -1,10 +1,10 @@
 ﻿@model WebsiteSkills.Models.Recurso
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes";
 }
 
-<h1>Details</h1>
+<h1>Detalhes</h1>
 
 <div>
     <h4>Recurso</h4>
@@ -20,7 +20,21 @@
             @Html.DisplayNameFor(model => model.ConteudoRecurso)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ConteudoRecurso)
+            @if (Model.TipoRecurso == "Imagem")
+            {
+                <img src="~/FicheirosRecursos/@Model.ConteudoRecurso"
+                alt="Imagem referente a @Model.NomeRecurso"
+                title="@Model.NomeRecurso"
+                width="150px" />
+            }
+            else if (Model.TipoRecurso == "PDF")
+            {
+                <embed src="~/FicheirosRecursos/@Model.ConteudoRecurso" width="800px" height="1000px" />
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.ConteudoRecurso)
+            }
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TipoRecurso)
@@ -32,11 +46,11 @@
             @Html.DisplayNameFor(model => model.Skill)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Skill.SkillsId)
+            @Html.DisplayFor(model => model.Skill.Nome)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdRecurso">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.IdRecurso">Editar</a> |
+    <a asp-action="Index">Voltar à lista de Recursos</a>
 </div>

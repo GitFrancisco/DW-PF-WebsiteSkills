@@ -5,7 +5,7 @@
 namespace WebsiteSkills.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMig2 : Migration
+    public partial class Recursos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

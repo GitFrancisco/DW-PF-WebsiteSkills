@@ -5,7 +5,7 @@
 namespace WebsiteSkills.Migrations
 {
     /// <inheritdoc />
-    public partial class reqSkillsFK : Migration
+    public partial class custoSkill : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
