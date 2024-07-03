@@ -397,4 +397,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/WebsiteSkills/WebsiteSkills/Models/Recurso.cs
+
+# Migracoes
+/WebsiteSkills/WebsiteSkills/Migrations/*

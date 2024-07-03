@@ -7,15 +7,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // ******************************************************
 
-// localização da Base de Dados
+// localizaï¿½ï¿½o da Base de Dados
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-// referência ao Sistema de Gestão de Bases de Dados (SGBD)
+// referï¿½ncia ao Sistema de Gestï¿½o de Bases de Dados (SGBD)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// ReferÃªncia ao Identity que faz a autenticaÃ§Ã£o.
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    // Permite a adiÃ§Ã£o de Roles
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
