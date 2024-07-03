@@ -2,11 +2,14 @@
 
 namespace WebsiteSkills.Models
 {
+    /// <summary>
+    /// Classe que representa os utilizadores
+    /// </summary>
     public class Utilizadores
     {
         /// <summary>
         /// Chave Primária
-        /// </summary>
+        /// </summary> 
         [Key] // Chave primária - Utilizadores
         public int Id { get; set; }
         /// <summary>

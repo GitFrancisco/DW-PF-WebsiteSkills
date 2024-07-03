@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebsiteSkills.Data;
 
@@ -11,9 +12,11 @@ using WebsiteSkills.Data;
 namespace WebsiteSkills.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240702154928_custoSkill")]
+    partial class custoSkill
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,6 +251,7 @@ namespace WebsiteSkills.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRecurso"));
 
                     b.Property<string>("ConteudoRecurso")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NomeRecurso")
@@ -329,9 +333,6 @@ namespace WebsiteSkills.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("DataNascimento")
-                        .HasColumnType("date");
-
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasMaxLength(13)
@@ -340,16 +341,6 @@ namespace WebsiteSkills.Migrations
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Telemovel")
-                        .IsRequired()
-                        .HasMaxLength(9)
-                        .HasColumnType("nvarchar(9)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("Id");
 
@@ -445,13 +436,13 @@ namespace WebsiteSkills.Migrations
 
             modelBuilder.Entity("WebsiteSkills.Models.Recurso", b =>
                 {
-                    b.HasOne("WebsiteSkills.Models.Skills", "Skill")
+                    b.HasOne("WebsiteSkills.Models.Skills", "Skills")
                         .WithMany("ListaRecursos")
                         .HasForeignKey("SkillsFK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Skill");
+                    b.Navigation("Skills");
                 });
 
             modelBuilder.Entity("WebsiteSkills.Models.Subscricoes", b =>

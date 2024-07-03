@@ -1,0 +1,43 @@
+﻿@model WebsiteSkills.Models.Recurso
+
+@{
+    ViewData["Title"] = "Criar";
+}
+
+<h1>Criar</h1>
+
+<h4>Recurso</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NomeRecurso" class="control-label"></label>
+                <input asp-for="NomeRecurso" class="form-control" />
+                <span asp-validation-for="NomeRecurso" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TipoRecurso" class="control-label"></label>
+                @*Dropdown para selecionar o tipo de recurso a utilizar*@
+                <select asp-for="TipoRecurso" class="form-control" asp-items="@(ViewBag.TipoRecursoOptions)"></select>
+                <span asp-validation-for="TipoRecurso" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SkillsFK" class="control-label"></label>
+                <select asp-for="SkillsFK" class ="form-control" asp-items="ViewBag.SkillsFK"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Criar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Voltar à lista de Skills</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
