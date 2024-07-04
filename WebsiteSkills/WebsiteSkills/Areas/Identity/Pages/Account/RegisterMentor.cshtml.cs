@@ -24,13 +24,13 @@ using WebsiteSkills.Models;
 
 namespace WebsiteSkills.Areas.Identity.Pages.Account
 {
-    public class RegisterModel : PageModel
+    public class RegisterMentorModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
-        private readonly ILogger<RegisterModel> _logger;
+        private readonly ILogger<RegisterMentorModel> _logger;
         private readonly IEmailSender _emailSender;
 
 
@@ -39,11 +39,11 @@ namespace WebsiteSkills.Areas.Identity.Pages.Account
         /// </summary>
         private readonly ApplicationDbContext _context;
 
-        public RegisterModel(
+        public RegisterMentorModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
-            ILogger<RegisterModel> logger,
+            ILogger<RegisterMentorModel> logger,
             IEmailSender emailSender,
             ApplicationDbContext context)
         {
@@ -110,9 +110,9 @@ namespace WebsiteSkills.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             /// <summary>
-            /// Recolhe os dados do Aluno
+            /// Recolhe os dados do Mentor
             /// </summary>
-            public Aluno Aluno { get; set; }
+            public Mentor Mentor { get; set; }
         }
 
 
@@ -128,7 +128,7 @@ namespace WebsiteSkills.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             // Remova o UserId do ModelState para evitar a validação
-            ModelState.Remove("Input.Aluno.UserId");
+            ModelState.Remove("Input.Mentor.UserId");
 
             if (ModelState.IsValid)
             {
@@ -142,15 +142,16 @@ namespace WebsiteSkills.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Aqui é atribuido o Role ao Utilizador de Aluno
-                    await _userManager.AddToRoleAsync(user, "Aluno");
+                    // Aqui é atribuido o Role ao Utilizador de Mentor
+                    await _userManager.AddToRoleAsync(user, "Mentor");
+
                     // Guardar o ID do utilizador no atributo UserId de forma a fazer uma 'ponte' entre a BD de autenticação e a BD do 'negócio'
-                    Input.Aluno.UserId = user.Id;
+                    Input.Mentor.UserId = user.Id;
 
                     try
                     {
                         // Guarda os dados na Base de Dados
-                        _context.Add(Input.Aluno);
+                        _context.Add(Input.Mentor);
                         await _context.SaveChangesAsync();
                     }
                     catch (Exception ex)
