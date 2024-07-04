@@ -7,7 +7,10 @@
 <h1>Índice</h1>
 
 <p>
+    @if (User.Identity.IsAuthenticated)
+    {
     <a asp-action="Create">Criar nova Skill</a>
+    }
 </p>
 <table class="table">
     <thead>
@@ -58,9 +61,14 @@
                          width="150px" />
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.SkillsId">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.SkillsId">Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@item.SkillsId">Apagar</a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                <text>
+                    <a asp-action="Edit" asp-route-id="@item.SkillsId">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.SkillsId">Detalhes</a> |
+                    <a asp-action="Delete" asp-route-id="@item.SkillsId">Apagar</a> |
+                </text>
+                }
             </td>
         </tr>
 }
