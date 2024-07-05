@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebsiteSkills.Data;
-using WebsiteSkills.Migrations;
 using WebsiteSkills.Models;
 
 namespace WebsiteSkills.Controllers
@@ -312,5 +312,37 @@ namespace WebsiteSkills.Controllers
         {
             return _context.Skills.Any(e => e.SkillsId == id);
         }
+
+        [Authorize(Roles = "Mentor")]
+        public IActionResult AdicionarSkillsMentores(int id)
+        {
+            // Obtém o ID do mentor autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Procura o mentor na BD
+            var mentor = _context.Mentor.FirstOrDefault(m => m.UserId == userId);
+
+            // Se o mentor não existir, devolve erro
+            if (mentor == null)
+            {
+                return NotFound("Mentor não encontrado.");
+            }
+
+            // Procura a skill na BD
+            var skill = _context.Skills.Find(id);
+            if (skill == null)
+            {
+                return NotFound("Skill não encontrada.");
+            }
+
+            // Se a skill não existir na lista de skills do mentor, adiciona
+            if (!mentor.ListaSkills.Contains(skill))
+            {
+                mentor.ListaSkills.Add(skill);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }

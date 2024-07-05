@@ -61,14 +61,21 @@
                          width="150px" />
             </td>
             <td>
-                @if (User.Identity.IsAuthenticated)
-                {
-                <text>
-                    <a asp-action="Edit" asp-route-id="@item.SkillsId">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.SkillsId">Detalhes</a> |
-                    <a asp-action="Delete" asp-route-id="@item.SkillsId">Apagar</a> |
-                </text>
-                }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <text>
+                            <a asp-action="Details" asp-route-id="@item.SkillsId">Detalhes</a>
+                            @if (User.IsInRole("Mentor"))
+                            {
+                                <text>
+                                    |
+                                    <a asp-action="Edit" asp-route-id="@item.SkillsId">Editar</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.SkillsId">Apagar</a> |
+                                    <a asp-action="AdicionarSkillsMentores" asp-route-id="@item.SkillsId">Adicionar à lista de Skills</a>
+                                </text>
+                            }
+                        </text>
+                    }
             </td>
         </tr>
 }
