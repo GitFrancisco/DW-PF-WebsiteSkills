@@ -344,5 +344,25 @@ namespace WebsiteSkills.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        // GET: Skills/Recursos
+        [Authorize]
+        public async Task<IActionResult> Recursos(int id)
+        {
+            var skill = await _context.Skills.FindAsync(id);
+
+            // Se a skill não existir, devolve erro
+            if (skill == null)
+            {
+                return NotFound();
+            }
+
+            // Obter a lista de recursos associados à skill
+            var recursos = await _context.Recurso.Where(r => r.SkillsFK == id).ToListAsync();
+
+            // Passar a lista de recursos para a View
+            ViewBag.Recursos = recursos;
+
+            return View();
+        }
     }
 }

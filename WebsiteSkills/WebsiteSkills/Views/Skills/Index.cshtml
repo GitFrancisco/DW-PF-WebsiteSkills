@@ -65,6 +65,7 @@
                     {
                         <text>
                             <a asp-action="Details" asp-route-id="@item.SkillsId">Detalhes</a>
+                            <a asp-action="Recursos" asp-route-id="@item.SkillsId">Recursos</a>
                             @if (User.IsInRole("Mentor"))
                             {
                                 <text>
