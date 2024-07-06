@@ -74,6 +74,13 @@
                                     <a asp-action="AdicionarSkillsMentores" asp-route-id="@item.SkillsId">Adicionar à lista de Skills</a>
                                 </text>
                             }
+
+                            @if (User.IsInRole("Aluno"))
+                            {
+                                <text>
+                                    <a asp-action="AdicionarSubscricaoAluno" asp-route-id="@item.SkillsId">Adicionar à lista de Subscrições</a>
+                                </text>
+                            }
                         </text>
                     }
             </td>

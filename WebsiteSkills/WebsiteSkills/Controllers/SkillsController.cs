@@ -344,5 +344,48 @@ namespace WebsiteSkills.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+
+        [Authorize(Roles = "Aluno")]
+        public IActionResult AdicionarSubscricaoAluno(int id)
+        {
+            // Obtém o ID do aluno autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Procura o aluno na BD
+            var aluno = _context.Aluno.FirstOrDefault(a => a.UserId == userId);
+
+            // Se o aluno não existir, devolve erro
+            if (aluno == null)
+            {
+                return NotFound("Aluno não encontrado.");
+            }
+
+            // Verifica se a skill existe
+            var skill = _context.Skills.FirstOrDefault(s => s.SkillsId == id);
+            if (skill == null)
+            {
+                return NotFound("Skill não encontrada.");
+            }
+
+            // Verifica se a subscrição já existe
+            var subscricaoExistente = _context.Subscricoes
+                .FirstOrDefault(s => s.SkillsFK == skill.SkillsId && s.AlunoFK == aluno.Id);
+
+            if (subscricaoExistente == null)
+            {
+                var subscricao = new Subscricoes
+                {
+                    SkillsFK = skill.SkillsId,
+                    AlunoFK = aluno.Id,
+                    dataSubscricao = DateTime.Now
+                };
+
+                _context.Subscricoes.Add(subscricao);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }
