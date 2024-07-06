@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
@@ -144,6 +145,13 @@ namespace WebsiteSkills.Areas.Identity.Pages.Account
 
                     // Aqui é atribuido o Role ao Utilizador de Mentor
                     await _userManager.AddToRoleAsync(user, "Mentor");
+
+                    // Adicionar o Nome do Mentor às Claims
+                    var claims = new List<Claim>
+                    {
+                        new Claim("Nome", Input.Mentor.Nome)
+                    };
+                    await _userManager.AddClaimsAsync(user, claims);
 
                     // Guardar o ID do utilizador no atributo UserId de forma a fazer uma 'ponte' entre a BD de autenticação e a BD do 'negócio'
                     Input.Mentor.UserId = user.Id;

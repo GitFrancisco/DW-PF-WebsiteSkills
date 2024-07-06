@@ -6,8 +6,13 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello 
-            @User.Identity?.Name!
+        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Olá 
+                @{
+                    // Vai buscar o claim "Nome" do utilizador que está autenticado no momento.
+                    var nomeClaim = User.Claims.FirstOrDefault(c => c.Type == "Nome");
+                    var nome = nomeClaim != null ? nomeClaim.Value : "Utilizador";
+                    <text>@nome!</text>
+                }
         </a>
     </li>
     <li class="nav-item">
