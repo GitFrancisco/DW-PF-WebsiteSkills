@@ -29,7 +29,18 @@ namespace WebsiteSkills.Controllers
         // GET: Skills
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Skills.ToListAsync());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var aluno = userId != null ? _context.Aluno.FirstOrDefault(a => a.UserId == userId) : null;
+
+            var skills = await _context.Skills.ToListAsync();
+
+            var skillsViewModel = skills.Select(skill => new SkillViewModel
+            {
+                Skill = skill,
+                IsSubscribed = aluno != null && _context.Subscricoes.Any(s => s.SkillsFK == skill.SkillsId && s.AlunoFK == aluno.Id)
+            }).ToList();
+
+            return View(skillsViewModel);
         }
 
         // GET: Skills/Details/5
@@ -378,13 +389,102 @@ namespace WebsiteSkills.Controllers
                     AlunoFK = aluno.Id,
                     dataSubscricao = DateTime.Now
                 };
-
+                // Adiciona a subscrição à BD
                 _context.Subscricoes.Add(subscricao);
                 _context.SaveChanges();
+            } else
+            {
+                return NotFound("Você já está subscrito a esta Skill.");
             }
 
+            // Redireciona para a página inicial
             return RedirectToAction("Index", "Home");
+
         }
+
+        // Método GET para exibir o formulário de Checkout
+        [HttpGet]
+        public async Task<IActionResult> Checkout(int id)
+        {
+            // Obter a skill
+            var skill = await _context.Skills.FindAsync(id);
+
+            // Se a skill não existir, devolve erro
+            if (skill == null)
+            {
+                return NotFound();
+            }
+
+            return View(skill);
+        }
+
+        // Método POST para processar a submissão do formulário de Checkout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckoutConfirmed(int id, string CCnum, string CCnome, string CCvalidade, string CCcvv)
+        {
+            // Verifica se os campos do cartão de crédito estão preenchidos
+            if (string.IsNullOrEmpty(CCnum) || string.IsNullOrEmpty(CCnome) || string.IsNullOrEmpty(CCvalidade) || string.IsNullOrEmpty(CCcvv))
+            {
+                var skill = await _context.Skills.FindAsync(id);
+                ViewBag.Message = "Todos os campos do cartão de crédito são obrigatórios.";
+                return View("Checkout", skill);
+            }
+
+            try
+            {
+                // Obter a skill
+                var skill = await _context.Skills.FindAsync(id);
+
+                // Obtém o ID do aluno autenticado
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                // Procura o aluno na BD
+                var aluno = _context.Aluno.FirstOrDefault(a => a.UserId == userId);
+
+                // Se o aluno não existir, devolve erro
+                if (aluno == null)
+                {
+                    return NotFound("Aluno não encontrado.");
+                }
+
+                // Se a skill não existir, devolve erro
+                if (skill == null)
+                {
+                    return NotFound();
+                }
+
+                // Verifica se a subscrição já existe
+                var subscricaoExistente = _context.Subscricoes
+                    .FirstOrDefault(s => s.SkillsFK == skill.SkillsId && s.AlunoFK == aluno.Id);
+                
+                if (subscricaoExistente == null)
+                {
+                    var subscricao = new Subscricoes
+                    {
+                        SkillsFK = skill.SkillsId,
+                        AlunoFK = aluno.Id,
+                        dataSubscricao = DateTime.Now
+                    };
+                    // Adiciona a subscrição à BD
+                    _context.Subscricoes.Add(subscricao);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    ViewBag.Message = "Você já está subscrito a esta Skill.";
+                    return View("Checkout", skill);
+                }
+
+                ViewBag.Message = "Acabou de subscrever esta Skill!";
+                return View("Checkout", skill);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Ocorreu um erro interno.");
+            }
+        }
+
         // GET: Skills/Recursos
         [Authorize]
         public async Task<IActionResult> Recursos(int id)
@@ -404,6 +504,6 @@ namespace WebsiteSkills.Controllers
             ViewBag.Recursos = recursos;
 
             return View();
-        }
+        } 
     }
 }

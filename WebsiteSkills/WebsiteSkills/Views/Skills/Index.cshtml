@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebsiteSkills.Models.Skills>
+﻿@model IEnumerable<WebsiteSkills.Models.SkillViewModel>
 
 @{
     ViewData["Title"] = "Índice";
@@ -16,22 +16,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+                @Html.DisplayNameFor(model => model.Skill.Nome)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dificuldade)
+                @Html.DisplayNameFor(model => model.Skill.Dificuldade)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Tempo)
+                @Html.DisplayNameFor(model => model.Skill.Tempo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Descricao)
+                @Html.DisplayNameFor(model => model.Skill.Descricao)
             </th>              
             <th> 
-                @Html.DisplayNameFor(model => model.Custo)
+                @Html.DisplayNameFor(model => model.Skill.Custo)
             </th>            
             <th>
-                @Html.DisplayNameFor(model => model.Imagem)
+                @Html.DisplayNameFor(model => model.Skill.Imagem)
             </th>
             <th></th>
         </tr>
@@ -40,46 +40,46 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Nome)
+                    @Html.DisplayFor(modelItem => item.Skill.Nome)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Dificuldade)
+                    @Html.DisplayFor(modelItem => item.Skill.Dificuldade)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Tempo)
+                    @Html.DisplayFor(modelItem => item.Skill.Tempo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
+                    @Html.DisplayFor(modelItem => item.Skill.Descricao)
             </td>            
             <td>
-                @Html.DisplayFor(modelItem => item.Custo)
+                    @Html.DisplayFor(modelItem => item.Skill.Custo)
             </td>
             <td>
-                    <img src="~/Imagens/@Html.DisplayFor(modelItem => item.Imagem)"
-                         alt="Imagem referente a @Html.DisplayFor(modelItem => item.Nome)"
-                         title="@Html.DisplayFor(modelItem => item.Nome)"
+                    <img src="~/Imagens/@Html.DisplayFor(modelItem => item.Skill.Imagem)"
+                         alt="Imagem referente a @Html.DisplayFor(modelItem => item.Skill.Nome)"
+                         title="@Html.DisplayFor(modelItem => item.Skill.Nome)"
                          width="150px" />
             </td>
             <td>
                     @if (User.Identity.IsAuthenticated)
                     {
                         <text>
-                            <a asp-action="Details" asp-route-id="@item.SkillsId">Detalhes</a>
-                            <a asp-action="Recursos" asp-route-id="@item.SkillsId">Recursos</a>
+                            <a asp-action="Details" asp-route-id="@item.Skill.SkillsId">Detalhes</a>
+                            <a asp-action="Recursos" asp-route-id="@item.Skill.SkillsId">Recursos</a>
                             @if (User.IsInRole("Mentor"))
                             {
                                 <text>
                                     |
-                                    <a asp-action="Edit" asp-route-id="@item.SkillsId">Editar</a> |
-                                    <a asp-action="Delete" asp-route-id="@item.SkillsId">Apagar</a> |
-                                    <a asp-action="AdicionarSkillsMentores" asp-route-id="@item.SkillsId">Adicionar à lista de Skills</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Skill.SkillsId">Editar</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Skill.SkillsId">Apagar</a> |
+                                    <a asp-action="AdicionarSkillsMentores" asp-route-id="@item.Skill.SkillsId">Adicionar à lista de Skills</a>
                                 </text>
                             }
 
-                            @if (User.IsInRole("Aluno"))
+                            @if (User.IsInRole("Aluno") && !item.IsSubscribed)
                             {
                                 <text>
-                                    <a asp-action="AdicionarSubscricaoAluno" asp-route-id="@item.SkillsId">Adicionar à lista de Subscrições</a>
+                                    <a asp-action="Checkout" asp-route-id="@item.Skill.SkillsId">Subscrever</a>
                                 </text>
                             }
                         </text>
