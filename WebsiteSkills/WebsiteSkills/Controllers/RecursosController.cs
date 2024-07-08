@@ -13,7 +13,7 @@ using WebsiteSkills.Models;
 
 namespace WebsiteSkills.Controllers
 {
-    [Authorize(Roles = "Mentor")]
+    [Authorize(Roles = "Mentor,Administrador")]
     public class RecursosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -32,6 +32,18 @@ namespace WebsiteSkills.Controllers
         {
             // Obter o ID do utilizador autenticado
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Se o utilizador autenticado for um administrador
+            if (User.IsInRole("Administrador"))
+            {
+                // Obter todos os recursos
+                var ListaRecursos = await _context.Recurso
+                    .Include(r => r.Skill)
+                    .ToListAsync();
+                // Devolver a View com todos os recursos
+                return View(ListaRecursos);
+            }
+
             // Obter o mentor autenticado
             var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
 
@@ -78,6 +90,9 @@ namespace WebsiteSkills.Controllers
         {
             // Obter o ID do utilizador autenticado
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Se o utilizador autenticado for um mentor
+            if (User.IsInRole("Mentor")) { 
             // Obter o mentor autenticado
             var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
 
@@ -89,7 +104,13 @@ namespace WebsiteSkills.Controllers
 
             // Filtra apenas as habilidades do mentor autenticado
             ViewData["SkillsFK"] = new SelectList(mentor.ListaSkills, "SkillsId", "Nome");
-
+            }
+            else
+            {
+                // Se o utilizador autenticado for um administrador
+                // Obter todas as habilidades
+                ViewData["SkillsFK"] = new SelectList(_context.Skills, "SkillsId", "Nome");
+            }
             // Cria uma lista de opções para o atributo "TipoRecurso"
             // Os utilizadores podem escolher entre "PDF", "Imagem" e "Texto"
             // Em que podem ser guardados (no disco rígido) os PDFs e imagens e o texto é diretamente inserido na BD.
@@ -150,11 +171,12 @@ namespace WebsiteSkills.Controllers
         {
             // Obter o ID do utilizador autenticado
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             // Obter o mentor autenticado
             var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
 
             // Se o mentor não existir, redirecionar para a página inicial
-            if (mentor == null)
+            if (mentor == null && !User.IsInRole("Administrador"))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -166,7 +188,7 @@ namespace WebsiteSkills.Controllers
             }
 
             // Verifica se o mentor tem acesso ao recurso
-            if (!mentor.ListaSkills.Any(s => s.SkillsId == id))
+            if (!mentor.ListaSkills.Any(s => s.SkillsId == id) && !User.IsInRole("Administrador"))
             {
                 return NotFound();
             }
@@ -343,7 +365,7 @@ namespace WebsiteSkills.Controllers
             var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
 
             // Se o mentor não existir, redirecionar para a página inicial
-            if (mentor == null)
+            if (mentor == null && !User.IsInRole("Administrador"))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -354,7 +376,7 @@ namespace WebsiteSkills.Controllers
             }
 
             // Verifica se o mentor tem acesso ao recurso
-            if (!mentor.ListaSkills.Any(s => s.SkillsId == id))
+            if (!mentor.ListaSkills.Any(s => s.SkillsId == id) && !User.IsInRole("Administrador"))
             {
                 return NotFound();
             }

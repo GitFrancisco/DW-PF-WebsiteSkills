@@ -7,7 +7,7 @@
 <h1>Índice</h1>
 
 <p>
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Administrador"))
     {
     <a asp-action="Create">Criar nova Skill</a>
     }
@@ -64,22 +64,32 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <text>
+                            @* Visivel para todos *@
                             <a asp-action="Details" asp-route-id="@item.Skill.SkillsId">Detalhes</a>
                             <a asp-action="Recursos" asp-route-id="@item.Skill.SkillsId">Recursos</a>
-                            @if (User.IsInRole("Mentor"))
+
+                            @* Visivel para mentores *@
+                            @if (User.IsInRole("Mentor") || User.IsInRole("Administrador"))
                             {
                                 <text>
-                                    |
-                                    <a asp-action="Edit" asp-route-id="@item.Skill.SkillsId">Editar</a> |
-                                    <a asp-action="Delete" asp-route-id="@item.Skill.SkillsId">Apagar</a> |
                                     <a asp-action="AdicionarSkillsMentores" asp-route-id="@item.Skill.SkillsId">Adicionar à lista de Skills</a>
                                 </text>
                             }
 
-                            @if (User.IsInRole("Aluno") && !item.IsSubscribed)
+                            @* Visivel para alunos *@
+                            @if ((User.IsInRole("Aluno") && !item.IsSubscribed) || User.IsInRole("Administrador"))
                             {
                                 <text>
                                     <a asp-action="Checkout" asp-route-id="@item.Skill.SkillsId">Subscrever</a>
+                                </text>
+                            }
+
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <text>
+                                    |
+                                    <a asp-action="Edit" asp-route-id="@item.Skill.SkillsId">Editar</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Skill.SkillsId">Apagar</a> 
                                 </text>
                             }
                         </text>
