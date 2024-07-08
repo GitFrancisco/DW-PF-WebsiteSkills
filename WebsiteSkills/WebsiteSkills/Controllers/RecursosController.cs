@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +13,7 @@ using WebsiteSkills.Models;
 
 namespace WebsiteSkills.Controllers
 {
+    [Authorize(Roles = "Mentor")]
     public class RecursosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,8 +30,28 @@ namespace WebsiteSkills.Controllers
         // GET: Recursos
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Recurso.Include(r => r.Skill);
-            return View(await applicationDbContext.ToListAsync());
+            // Obter o ID do utilizador autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Obter o mentor autenticado
+            var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
+
+            // Se o mentor não existir, redirecionar para a página inicial
+            if (mentor == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Obter os IDs das habilidades do mentor autenticado
+            var mentorSkillsIds = mentor.ListaSkills.Select(s => s.SkillsId).ToList();
+
+            // Filtrar os recursos que estão associados às habilidades do mentor
+            var recursos = await _context.Recurso
+                .Where(r => mentorSkillsIds.Contains(r.SkillsFK))
+                .Include(r => r.Skill)
+                .ToListAsync();
+
+            // Devolver a View com os recursos filtrados
+            return View(recursos);
         }
 
         // GET: Recursos/Details/5
@@ -53,7 +76,20 @@ namespace WebsiteSkills.Controllers
         // GET: Recursos/Create
         public IActionResult Create()
         {
-            ViewData["SkillsFK"] = new SelectList(_context.Skills, "SkillsId", "Nome");
+            // Obter o ID do utilizador autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Obter o mentor autenticado
+            var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
+
+            // Se o mentor não existir, redirecionar para a página inicial
+            if (mentor == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Filtra apenas as habilidades do mentor autenticado
+            ViewData["SkillsFK"] = new SelectList(mentor.ListaSkills, "SkillsId", "Nome");
+
             // Cria uma lista de opções para o atributo "TipoRecurso"
             // Os utilizadores podem escolher entre "PDF", "Imagem" e "Texto"
             // Em que podem ser guardados (no disco rígido) os PDFs e imagens e o texto é diretamente inserido na BD.
@@ -70,10 +106,22 @@ namespace WebsiteSkills.Controllers
         // POST: Recursos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Mentor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdRecurso,NomeRecurso,ConteudoRecurso,TipoRecurso,SkillsFK")] Recurso recurso)
         {
+            // Obter o ID do utilizador autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Obter o mentor autenticado
+            var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
+
+            // Se o mentor não existir, redirecionar para a página inicial
+            if (mentor == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             // Remove o atributo "Skill" do ModelState
             ModelState.Remove("Skill");
             // Remove o atributo "ConteudoRecurso" do ModelState
@@ -86,7 +134,8 @@ namespace WebsiteSkills.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SkillsFK"] = new SelectList(_context.Skills, "SkillsId", "Nome", recurso.SkillsFK);
+            // Voltar a carregar a lista de habilidades do mentor e o tipo de recursos
+            ViewData["SkillsFK"] = new SelectList(mentor.ListaSkills, "SkillsId", "Nome");
             ViewBag.TipoRecursoOptions = new List<SelectListItem>
             {
                 new SelectListItem { Value = "PDF", Text = "PDF" },
@@ -99,7 +148,25 @@ namespace WebsiteSkills.Controllers
         // GET: Recursos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            // Obter o ID do utilizador autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Obter o mentor autenticado
+            var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
+
+            // Se o mentor não existir, redirecionar para a página inicial
+            if (mentor == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Verifica se o ID é nulo
             if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Verifica se o mentor tem acesso ao recurso
+            if (!mentor.ListaSkills.Any(s => s.SkillsId == id))
             {
                 return NotFound();
             }
@@ -159,7 +226,8 @@ namespace WebsiteSkills.Controllers
                     string nomeFicheiro = "";
 
                     // Verifica se o recurso é do tipo "PDF" ou "Imagem"
-                    if (recurso.TipoRecurso == "PDF" || recurso.TipoRecurso == "Imagem"){
+                    if (recurso.TipoRecurso == "PDF" || recurso.TipoRecurso == "Imagem")
+                    {
                         if (FicheiroRecurso == null)
                         {
                             // Mantém o mesmo ficheiro.
@@ -176,9 +244,9 @@ namespace WebsiteSkills.Controllers
                         {
                             // Se não guarda o ficheiro, devolve à View
                             // Verifica se o ficheiro é dos tipos aceites (PNG, JPG, JPEG e PDF)
-                            if (!(FicheiroRecurso.ContentType == "image/png" || FicheiroRecurso.ContentType == "image/jpg" 
-                                ||FicheiroRecurso.ContentType == "image/jpeg"
-                                ||FicheiroRecurso.ContentType == "application/pdf"))
+                            if (!(FicheiroRecurso.ContentType == "image/png" || FicheiroRecurso.ContentType == "image/jpg"
+                                || FicheiroRecurso.ContentType == "image/jpeg"
+                                || FicheiroRecurso.ContentType == "application/pdf"))
                             {
                                 // Devolve o controlo à View
                                 ModelState.AddModelError("",
@@ -201,9 +269,10 @@ namespace WebsiteSkills.Controllers
                                 recurso.ConteudoRecurso = nomeFicheiro;
 
                                 // Apagar o ficheiro antigo
-                                if (existingRecurso.ConteudoRecurso != null) {
-                                var FicheiroApagar = Path.Combine(_webHostEnvironment.WebRootPath, "FicheirosRecursos", existingRecurso.ConteudoRecurso);
-                                // Se o ficheiro existir, apaga-o
+                                if (existingRecurso.ConteudoRecurso != null)
+                                {
+                                    var FicheiroApagar = Path.Combine(_webHostEnvironment.WebRootPath, "FicheirosRecursos", existingRecurso.ConteudoRecurso);
+                                    // Se o ficheiro existir, apaga-o
                                     if (System.IO.File.Exists(FicheiroApagar))
                                     {
                                         System.IO.File.Delete(FicheiroApagar);
@@ -212,7 +281,8 @@ namespace WebsiteSkills.Controllers
                             }
                         }
 
-                    } else
+                    }
+                    else
                         recurso.ConteudoRecurso = TextoRecurso;
 
                     // Atualiza o recurso
@@ -267,7 +337,24 @@ namespace WebsiteSkills.Controllers
         // GET: Recursos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            // Obter o ID do utilizador autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Obter o mentor autenticado
+            var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
+
+            // Se o mentor não existir, redirecionar para a página inicial
+            if (mentor == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Verifica se o mentor tem acesso ao recurso
+            if (!mentor.ListaSkills.Any(s => s.SkillsId == id))
             {
                 return NotFound();
             }
