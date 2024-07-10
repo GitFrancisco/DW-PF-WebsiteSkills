@@ -1,0 +1,32 @@
+﻿@model WebsiteSkills.Models.Skills
+
+@{
+    ViewData["Title"] = "Recursos";
+}
+
+<h1>Recursos</h1>
+
+@foreach (var item in ViewBag.Recursos)
+{
+    <h3>@item.NomeRecurso</h3>
+    if (item.TipoRecurso == "PDF")
+    {
+        // Código para PDF
+        <embed src="~/FicheirosRecursos/@item.ConteudoRecurso" width="800px" height="1000px" />
+    }
+    else if (item.TipoRecurso == "Imagem")
+    {
+        // Código para Imagem
+        <img src="~/FicheirosRecursos/@item.ConteudoRecurso"
+             alt="Imagem referente a @item.NomeRecurso"
+             title="@item.NomeRecurso"
+             width="150px" />
+    }
+    else
+    {
+        // Código para outros tipos
+        <text>@item.ConteudoRecurso</text>
+    }
+}
+
+

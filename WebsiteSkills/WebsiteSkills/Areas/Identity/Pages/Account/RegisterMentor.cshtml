@@ -1,10 +1,10 @@
 ﻿@page
-@model RegisterModel
+@model RegisterMentorModel
 @{
     ViewData["Title"] = "Registo";
 }
 
-<h1>Registo de um novo Aluno</h1>
+<h1>Registo de um novo Mentor</h1>
 <h2>Criar uma nova conta.</h2>
 <hr />
 
@@ -32,21 +32,21 @@
 
         </div>
         <div class="col-md-6 col-md-offset-2">
-            @* Aqui é feita a recolha dos dados do Aluno *@
+            @* Aqui é feita a recolha dos dados do Mentor *@
             <div class="form-floating mb-3">
-                <input asp-for="Input.Aluno.Nome" class="form-control" aria-required="true" />
-                <label asp-for="Input.Aluno.Nome"></label>
-                <span asp-validation-for="Input.Aluno.Nome" class="text-danger"></span>
+                <input asp-for="Input.Mentor.Nome" class="form-control" aria-required="true" />
+                <label asp-for="Input.Mentor.Nome"></label>
+                <span asp-validation-for="Input.Mentor.Nome" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Aluno.DataNascimento" class="form-control" aria-required="true" />
-                <label asp-for="Input.Aluno.DataNascimento"></label>
-                <span asp-validation-for="Input.Aluno.DataNascimento" class="text-danger"></span>
+                <input asp-for="Input.Mentor.DataNascimento" class="form-control" aria-required="true" />
+                <label asp-for="Input.Mentor.DataNascimento"></label>
+                <span asp-validation-for="Input.Mentor.DataNascimento" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Aluno.Telemovel" class="form-control" aria-required="true" />
-                <label asp-for="Input.Aluno.Telemovel"></label>
-                <span asp-validation-for="Input.Aluno.Telemovel" class="text-danger"></span>
+                <input asp-for="Input.Mentor.Telemovel" class="form-control" aria-required="true" />
+                <label asp-for="Input.Mentor.Telemovel"></label>
+                <span asp-validation-for="Input.Mentor.Telemovel" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-4">
@@ -54,9 +54,9 @@
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registar</button>
         </div>
 
-        @* Botão para fazer o registo como Mentor *@
+        @* Botão para fazer o registo como Aluno *@
         <div class="mt-3">
-            <a href="/Identity/Account/RegisterMentor" class="btn btn-secondary">Registar como Mentor</a>
+            <a href="/Identity/Account/Register" class="btn btn-secondary">Registar como Aluno</a>
         </div>
 
     </div>

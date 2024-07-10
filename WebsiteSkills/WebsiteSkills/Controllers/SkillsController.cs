@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebsiteSkills.Data;
-using WebsiteSkills.Migrations;
 using WebsiteSkills.Models;
 
 namespace WebsiteSkills.Controllers
@@ -28,7 +29,23 @@ namespace WebsiteSkills.Controllers
         // GET: Skills
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Skills.ToListAsync());
+            // Obter o ID do utilizador autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Procurar o aluno na BD
+            var aluno = userId != null ? _context.Aluno.FirstOrDefault(a => a.UserId == userId) : null;
+
+            // Obter todas as skills
+            var skills = await _context.Skills.ToListAsync();
+
+            // Mapear as skills para a ViewModel
+            var skillsViewModel = skills.Select(skill => new SkillViewModel
+            {
+                Skill = skill,
+                IsSubscribed = aluno != null && _context.Subscricoes.Any(s => s.SkillsFK == skill.SkillsId && s.AlunoFK == aluno.Id)
+            }).ToList();
+
+            // Passar a lista de skills para a View
+            return View(skillsViewModel);
         }
 
         // GET: Skills/Details/5
@@ -50,6 +67,7 @@ namespace WebsiteSkills.Controllers
         }
 
         // GET: Skills/Create
+        [Authorize(Roles="Administrador")]
         public IActionResult Create()
         {
             return View();
@@ -58,6 +76,7 @@ namespace WebsiteSkills.Controllers
         // POST: Skills/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Nome,Dificuldade,Tempo,Descricao,CustoAux,Custo")] Skills skills, IFormFile ImagemSkill)
@@ -147,6 +166,7 @@ namespace WebsiteSkills.Controllers
 
 
         // GET: Skills/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -168,6 +188,7 @@ namespace WebsiteSkills.Controllers
         // POST: Skills/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("SkillsId,Nome,Dificuldade,Tempo,Descricao,Custo,CustoAux")] Skills skills, IFormFile ImagemSkill)
@@ -269,6 +290,7 @@ namespace WebsiteSkills.Controllers
         }
 
         // GET: Skills/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -287,6 +309,7 @@ namespace WebsiteSkills.Controllers
         }
 
         // POST: Skills/Delete/5
+        [Authorize(Roles = "Administrador")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -305,5 +328,238 @@ namespace WebsiteSkills.Controllers
         {
             return _context.Skills.Any(e => e.SkillsId == id);
         }
+
+        [Authorize(Roles = "Mentor")]
+        public IActionResult AdicionarSkillsMentores(int id)
+        {
+            // Obtém o ID do mentor autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Procura o mentor na BD
+            var mentor = _context.Mentor.FirstOrDefault(m => m.UserId == userId);
+
+            // Se o mentor não existir, devolve erro
+            if (mentor == null)
+            {
+                return NotFound("Mentor não encontrado.");
+            }
+
+            // Procura a skill na BD
+            var skill = _context.Skills.Find(id);
+            if (skill == null)
+            {
+                return NotFound("Skill não encontrada.");
+            }
+
+            // Se a skill não existir na lista de skills do mentor, adiciona
+            if (!mentor.ListaSkills.Contains(skill))
+            {
+                mentor.ListaSkills.Add(skill);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        // Método GET para exibir o formulário de Checkout
+        [Authorize(Roles = "Aluno,Administrador")]
+        [HttpGet]
+        public async Task<IActionResult> Checkout(int id)
+        {
+            // Obter a skill
+            var skill = await _context.Skills.FindAsync(id);
+
+            // Se a skill não existir, devolve erro
+            if (skill == null)
+            {
+                return NotFound();
+            }
+
+            return View(skill);
+        }
+
+        // Método POST para processar a submissão do formulário de Checkout
+        [Authorize(Roles = "Aluno,Administrador")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckoutConfirmed(int id, string CCnum, string CCnome, string CCvalidade, string CCcvv)
+        {
+            // Verifica se os campos do cartão de crédito estão preenchidos
+            if (string.IsNullOrEmpty(CCnum) || string.IsNullOrEmpty(CCnome) || string.IsNullOrEmpty(CCvalidade) || string.IsNullOrEmpty(CCcvv))
+            {
+                var skill = await _context.Skills.FindAsync(id);
+                ViewBag.Message = "Todos os campos do cartão de crédito são obrigatórios.";
+                return View("Checkout", skill);
+            }
+
+            try
+            {
+                // Obter a skill
+                var skill = await _context.Skills.FindAsync(id);
+
+                // Obtém o ID do aluno autenticado
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                // Procura o aluno na BD
+                var aluno = _context.Aluno.FirstOrDefault(a => a.UserId == userId);
+
+                // Se o aluno não existir, devolve erro
+                if (aluno == null)
+                {
+                    return NotFound("Aluno não encontrado.");
+                }
+
+                // Se a skill não existir, devolve erro
+                if (skill == null)
+                {
+                    return NotFound();
+                }
+
+                // Verifica se a subscrição já existe
+                var subscricaoExistente = _context.Subscricoes
+                    .FirstOrDefault(s => s.SkillsFK == skill.SkillsId && s.AlunoFK == aluno.Id);
+                
+                if (subscricaoExistente == null)
+                {
+                    var subscricao = new Subscricoes
+                    {
+                        SkillsFK = skill.SkillsId,
+                        AlunoFK = aluno.Id,
+                        dataSubscricao = DateTime.Now
+                    };
+                    // Adiciona a subscrição à BD
+                    _context.Subscricoes.Add(subscricao);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    ViewBag.Message = "Você já está subscrito a esta Skill.";
+                    return View("Checkout", skill);
+                }
+
+                ViewBag.Message = "Acabou de subscrever esta Skill!";
+                return View("Checkout", skill);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Ocorreu um erro interno.");
+            }
+        }
+
+        // GET: Skills/Recursos
+        [Authorize]
+        public async Task<IActionResult> Recursos(int id)
+        {
+            // Obter o ID do utilizador autenticado
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var skill = await _context.Skills.FindAsync(id);
+
+            // Verificação se o Mentor ensina a Skill
+            if (User.IsInRole("Mentor"))
+            {
+                // Obter o mentor autenticado
+                var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
+
+                // Verificar se o mentor ensina a skill
+                if (!mentor.ListaSkills.Contains(skill))
+                {
+                    return NotFound();
+                }
+
+            }
+
+            // Verificação se o Aluno está subscrito a Skill
+            if (User.IsInRole("Aluno"))
+            {
+                // Obter o aluno autenticado
+                var aluno = userId != null ? _context.Aluno.FirstOrDefault(m => m.UserId == userId) : null;
+
+                // Verificar se o aluno está subscrito à skill
+                var subscricao = aluno != null ? _context.Subscricoes.FirstOrDefault(s => s.SkillsFK == id && s.AlunoFK == aluno.Id) : null;
+
+                // Se o aluno não estiver subscrito, devolve erro
+                if (subscricao == null)
+                {
+                    return NotFound();
+                }
+            }
+
+            // Se a skill não existir, devolve erro
+            if (skill == null)
+            {
+                return NotFound();
+            }
+
+            // Obter a lista de recursos associados à skill
+            var recursos = await _context.Recurso.Where(r => r.SkillsFK == id).ToListAsync();
+
+            // Passar a lista de recursos para a View
+            ViewBag.Recursos = recursos;
+
+            return View();
+
+        }
+
+        // Método GET para exibir o formulário de adicionar anuncios
+        [Authorize(Roles = "Aluno,Mentor,Administrador")]
+        [HttpGet]
+        public async Task<IActionResult> Anuncios(int id)
+        {
+            // Obter a skill
+            var skill = await _context.Skills.FindAsync(id);
+
+            // Se a skill não existir, devolve erro
+            if (skill == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Anuncios = await _context.Anuncio.Where(anuncio => anuncio.SkillsFK == id).OrderByDescending(anuncio => anuncio.DataCriacao).ToListAsync();
+            return View(skill);
+        }
+
+        // Método GET para exibir o formulário de Criar Anuncios
+        [Authorize(Roles = "Mentor,Administrador")]
+        [HttpGet]
+        public async Task<IActionResult> CriarAnuncios(int id)
+        {
+            // Obter a skill
+            var skill = await _context.Skills.FindAsync(id);
+
+            // Se a skill não existir, devolve erro
+            if (skill == null)
+            {
+                return NotFound();
+            }
+
+            return View(skill);
+        }
+
+        // Método POST para processar a submissão do formulário de adicionar anuncios
+        [Authorize(Roles = "Mentor,Administrador")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CriarAnuncios(int id, string texto)
+        {
+            if (ModelState.IsValid)
+            {
+                // Criar um novo anúncio com os dados recebidos do formulário
+                var anuncio = new Anuncio
+                {
+                    SkillsFK = id,
+                    Texto = texto,
+                    DataCriacao = DateTime.Now // Define a data atual
+                };
+
+                // Adicionar o novo anúncio ao banco de dados
+                _context.Anuncio.Add(anuncio);
+                await _context.SaveChangesAsync();
+
+                // Redirecionar para a página de anúncios da mesma skill
+                return RedirectToAction("Anuncios", new { id = id });
+            }
+
+            return RedirectToAction("Anuncios", new { id = id });
+        }
+
     }
 }
