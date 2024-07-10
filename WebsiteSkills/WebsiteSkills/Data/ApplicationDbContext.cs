@@ -16,5 +16,7 @@ namespace WebsiteSkills.Data
         public DbSet<Subscricoes> Subscricoes { get; set; }
         public DbSet<Recurso> Recurso { get; set; }
         public DbSet<Utilizadores> Utilizadores { get; set; }
+
+        public DbSet<Anuncio> Anuncio { get; set; }
     }
 }

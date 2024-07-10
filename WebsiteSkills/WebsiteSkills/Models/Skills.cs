@@ -14,6 +14,7 @@ namespace WebsiteSkills.Models
             ListaMentores = new HashSet<Mentor>();
             ListaRecursos = new HashSet<Recurso>();
             ListaSubscricoes = new HashSet<Subscricoes>();
+            ListaAnuncios = new HashSet<Anuncio>();
         }
 
         /// <summary>
@@ -68,5 +69,10 @@ namespace WebsiteSkills.Models
         /// Lista de Mentores associados à Skill
         /// </summary>
         public ICollection<Mentor> ListaMentores { get; set; }
+        /// <summary>
+        /// Lista de Anúncios associados à Skill
+        /// </summary>
+        public ICollection<Anuncio> ListaAnuncios { get; set; }
+
     }
 }

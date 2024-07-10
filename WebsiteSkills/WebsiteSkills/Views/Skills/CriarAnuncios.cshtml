@@ -1,0 +1,30 @@
+﻿@model WebsiteSkills.Models.Skills
+
+@{
+    ViewData["Title"] = "Criar Anúncio";
+}
+
+<h2>Criar Anúncio</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning">
+        @ViewBag.Message
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Voltar ao índice de Skills</a>
+}
+else
+{
+    <div>
+        <form asp-action="CriarAnuncios" method="post">
+            <div class="form-group">
+                <label class="control-label">Texto do Anúncio</label>
+                <input class="form-control" name="texto" maxlength="200"/>
+            </div>
+
+            <input type="hidden" name="id" value="@Model.SkillsId" />
+            <button type="submit" class="btn btn-primary">Submeter</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+}

@@ -1,0 +1,14 @@
+﻿@model WebsiteSkills.Models.Skills
+
+@{
+    ViewData["Title"] = "Anúncios";
+}
+
+<h1>Anúncios</h1>
+
+@foreach (var item in ViewBag.Anuncios)
+{
+    <div>
+        <text>@item.DataCriacao - @item.Texto</text>
+    </div>
+}

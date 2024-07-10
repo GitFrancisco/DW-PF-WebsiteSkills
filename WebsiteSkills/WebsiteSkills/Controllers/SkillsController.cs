@@ -360,55 +360,8 @@ namespace WebsiteSkills.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize(Roles = "Aluno")]
-        public IActionResult AdicionarSubscricaoAluno(int id)
-        {
-            // Obtém o ID do aluno autenticado
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // Procura o aluno na BD
-            var aluno = _context.Aluno.FirstOrDefault(a => a.UserId == userId);
-
-            // Se o aluno não existir, devolve erro
-            if (aluno == null)
-            {
-                return NotFound("Aluno não encontrado.");
-            }
-
-            // Verifica se a skill existe
-            var skill = _context.Skills.FirstOrDefault(s => s.SkillsId == id);
-            if (skill == null)
-            {
-                return NotFound("Skill não encontrada.");
-            }
-
-            // Verifica se a subscrição já existe
-            var subscricaoExistente = _context.Subscricoes
-                .FirstOrDefault(s => s.SkillsFK == skill.SkillsId && s.AlunoFK == aluno.Id);
-
-            if (subscricaoExistente == null)
-            {
-                var subscricao = new Subscricoes
-                {
-                    SkillsFK = skill.SkillsId,
-                    AlunoFK = aluno.Id,
-                    dataSubscricao = DateTime.Now
-                };
-                // Adiciona a subscrição à BD
-                _context.Subscricoes.Add(subscricao);
-                _context.SaveChanges();
-            } else
-            {
-                return NotFound("Você já está subscrito a esta Skill.");
-            }
-
-            // Redireciona para a página inicial
-            return RedirectToAction("Index", "Home");
-
-        }
-
         // Método GET para exibir o formulário de Checkout
-        [Authorize(Roles = "Aluno")]
+        [Authorize(Roles = "Aluno,Administrador")]
         [HttpGet]
         public async Task<IActionResult> Checkout(int id)
         {
@@ -425,7 +378,7 @@ namespace WebsiteSkills.Controllers
         }
 
         // Método POST para processar a submissão do formulário de Checkout
-        [Authorize(Roles = "Aluno")]
+        [Authorize(Roles = "Aluno,Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CheckoutConfirmed(int id, string CCnum, string CCnome, string CCvalidade, string CCcvv)
@@ -543,6 +496,70 @@ namespace WebsiteSkills.Controllers
             ViewBag.Recursos = recursos;
 
             return View();
-        } 
+
+        }
+
+        // Método GET para exibir o formulário de adicionar anuncios
+        [Authorize(Roles = "Aluno,Mentor,Administrador")]
+        [HttpGet]
+        public async Task<IActionResult> Anuncios(int id)
+        {
+            // Obter a skill
+            var skill = await _context.Skills.FindAsync(id);
+
+            // Se a skill não existir, devolve erro
+            if (skill == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Anuncios = await _context.Anuncio.Where(anuncio => anuncio.SkillsFK == id).OrderByDescending(anuncio => anuncio.DataCriacao).ToListAsync();
+            return View(skill);
+        }
+
+        // Método GET para exibir o formulário de Criar Anuncios
+        [Authorize(Roles = "Mentor,Administrador")]
+        [HttpGet]
+        public async Task<IActionResult> CriarAnuncios(int id)
+        {
+            // Obter a skill
+            var skill = await _context.Skills.FindAsync(id);
+
+            // Se a skill não existir, devolve erro
+            if (skill == null)
+            {
+                return NotFound();
+            }
+
+            return View(skill);
+        }
+
+        // Método POST para processar a submissão do formulário de adicionar anuncios
+        [Authorize(Roles = "Mentor,Administrador")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CriarAnuncios(int id, string texto)
+        {
+            if (ModelState.IsValid)
+            {
+                // Criar um novo anúncio com os dados recebidos do formulário
+                var anuncio = new Anuncio
+                {
+                    SkillsFK = id,
+                    Texto = texto,
+                    DataCriacao = DateTime.Now // Define a data atual
+                };
+
+                // Adicionar o novo anúncio ao banco de dados
+                _context.Anuncio.Add(anuncio);
+                await _context.SaveChangesAsync();
+
+                // Redirecionar para a página de anúncios da mesma skill
+                return RedirectToAction("Anuncios", new { id = id });
+            }
+
+            return RedirectToAction("Anuncios", new { id = id });
+        }
+
     }
 }

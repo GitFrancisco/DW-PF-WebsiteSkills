@@ -239,6 +239,32 @@ namespace WebsiteSkills.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("WebsiteSkills.Models.Anuncio", b =>
+                {
+                    b.Property<int>("AnuncioId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AnuncioId"));
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SkillsFK")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Texto")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("AnuncioId");
+
+                    b.HasIndex("SkillsFK");
+
+                    b.ToTable("Anuncio");
+                });
+
             modelBuilder.Entity("WebsiteSkills.Models.Recurso", b =>
                 {
                     b.Property<int>("IdRecurso")
@@ -443,6 +469,17 @@ namespace WebsiteSkills.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WebsiteSkills.Models.Anuncio", b =>
+                {
+                    b.HasOne("WebsiteSkills.Models.Skills", "Skill")
+                        .WithMany("ListaAnuncios")
+                        .HasForeignKey("SkillsFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skill");
+                });
+
             modelBuilder.Entity("WebsiteSkills.Models.Recurso", b =>
                 {
                     b.HasOne("WebsiteSkills.Models.Skills", "Skill")
@@ -475,6 +512,8 @@ namespace WebsiteSkills.Migrations
 
             modelBuilder.Entity("WebsiteSkills.Models.Skills", b =>
                 {
+                    b.Navigation("ListaAnuncios");
+
                     b.Navigation("ListaRecursos");
 
                     b.Navigation("ListaSubscricoes");

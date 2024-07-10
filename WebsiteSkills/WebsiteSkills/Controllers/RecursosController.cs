@@ -93,17 +93,17 @@ namespace WebsiteSkills.Controllers
 
             // Se o utilizador autenticado for um mentor
             if (User.IsInRole("Mentor")) { 
-            // Obter o mentor autenticado
-            var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
+                // Obter o mentor autenticado
+                var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
 
-            // Se o mentor não existir, redirecionar para a página inicial
-            if (mentor == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+                // Se o mentor não existir, redirecionar para a página inicial
+                if (mentor == null)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
 
-            // Filtra apenas as habilidades do mentor autenticado
-            ViewData["SkillsFK"] = new SelectList(mentor.ListaSkills, "SkillsId", "Nome");
+                // Filtra apenas as habilidades do mentor autenticado
+                ViewData["SkillsFK"] = new SelectList(mentor.ListaSkills, "SkillsId", "Nome");
             }
             else
             {
@@ -127,7 +127,6 @@ namespace WebsiteSkills.Controllers
         // POST: Recursos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "Mentor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdRecurso,NomeRecurso,ConteudoRecurso,TipoRecurso,SkillsFK")] Recurso recurso)
@@ -138,7 +137,7 @@ namespace WebsiteSkills.Controllers
             var mentor = userId != null ? _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.UserId == userId) : null;
 
             // Se o mentor não existir, redirecionar para a página inicial
-            if (mentor == null)
+            if (mentor == null & !User.IsInRole("Administrador"))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -156,7 +155,14 @@ namespace WebsiteSkills.Controllers
                 return RedirectToAction(nameof(Index));
             }
             // Voltar a carregar a lista de habilidades do mentor e o tipo de recursos
-            ViewData["SkillsFK"] = new SelectList(mentor.ListaSkills, "SkillsId", "Nome");
+            if (mentor != null)
+            {
+                ViewData["SkillsFK"] = new SelectList(mentor.ListaSkills, "SkillsId", "Nome");
+            } else
+            {
+                ViewData["SkillsFK"] = new SelectList(_context.Skills, "SkillsId", "Nome");
+            }
+           
             ViewBag.TipoRecursoOptions = new List<SelectListItem>
             {
                 new SelectListItem { Value = "PDF", Text = "PDF" },
@@ -188,9 +194,12 @@ namespace WebsiteSkills.Controllers
             }
 
             // Verifica se o mentor tem acesso ao recurso
-            if (!mentor.ListaSkills.Any(s => s.SkillsId == id) && !User.IsInRole("Administrador"))
+            if (!User.IsInRole("Administrador"))
             {
-                return NotFound();
+                if (!mentor.ListaSkills.Any(s => s.SkillsId == id))
+                {
+                    return NotFound();
+                }
             }
 
             var recurso = await _context.Recurso.FindAsync(id);
@@ -376,9 +385,11 @@ namespace WebsiteSkills.Controllers
             }
 
             // Verifica se o mentor tem acesso ao recurso
-            if (!mentor.ListaSkills.Any(s => s.SkillsId == id) && !User.IsInRole("Administrador"))
-            {
+            if (!User.IsInRole("Administrador"))
+            {            
+                if (!mentor.ListaSkills.Any(s => s.SkillsId == id)) { 
                 return NotFound();
+                }
             }
 
             var recurso = await _context.Recurso
