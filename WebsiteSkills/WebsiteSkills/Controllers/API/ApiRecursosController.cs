@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebsiteSkills.Data;
 using WebsiteSkills.Models;
+using WebsiteSkills.Models.DTO;
 
 namespace WebsiteSkills.Controllers.API
 {
@@ -40,12 +41,18 @@ namespace WebsiteSkills.Controllers.API
 
         // POST: api/Recurso
         [HttpPost]
-        public ActionResult<Recurso> PostRecurso(Recurso recurso)
+        public ActionResult<Recurso> PostRecurso([FromBody] RecursoDTO dto)
         {
+            Recurso recurso = new Recurso();
+            recurso.NomeRecurso = dto.NomeRecurso;
+            recurso.TipoRecurso = dto.TipoRecurso;
+            recurso.SkillsFK = dto.SkillsFK;
+            recurso.ConteudoRecurso = null;
+
             _context.Recurso.Add(recurso);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetRecurso), new { id = recurso.IdRecurso }, recurso);
+            return Ok();
         }
 
         // PUT: api/Recurso/5

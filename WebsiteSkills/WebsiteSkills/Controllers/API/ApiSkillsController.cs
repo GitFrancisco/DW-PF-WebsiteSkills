@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebsiteSkills.Models;
 using WebsiteSkills.Data;
+using WebsiteSkills.Models.DTO;
 
 namespace WebsiteSkills.Controllers.API
 {
@@ -42,12 +43,20 @@ namespace WebsiteSkills.Controllers.API
 
         // POST: api/Skills
         [HttpPost]
-        public ActionResult<Skills> PostSkill(Skills skill)
+        public ActionResult<Skills> PostSkill([FromBody] SkillsDTO dto)
         {
+            Skills skill = new Skills();
+            skill.Nome = dto.Nome;
+            skill.Dificuldade = dto.Dificuldade;
+            skill.Tempo = dto.Tempo;
+            skill.Descricao = dto.Descricao;
+            skill.Custo = dto.Custo;
+            skill.Imagem = dto.Imagem;
+
             _context.Skills.Add(skill);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetSkill), new { id = skill.SkillsId }, skill);
+            return Ok();
         }
 
         // PUT: api/Skills/5
