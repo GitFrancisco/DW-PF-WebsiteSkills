@@ -4,45 +4,57 @@
     ViewData["Title"] = "Editar";
 }
 
-<h1>Editar</h1>
+<h1 class="text-center my-4">Editar</h1>
 
-<h4>Recurso</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdRecurso" />
-            <div class="form-group">
-                <label asp-for="NomeRecurso" class="control-label"></label>
-                <input asp-for="NomeRecurso" class="form-control" />
-                <span asp-validation-for="NomeRecurso" class="text-danger"></span>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Recurso</h4>
+                    <hr />
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="IdRecurso" />
+
+                        <div class="form-group">
+                            <label asp-for="NomeRecurso" class="control-label"></label>
+                            <input asp-for="NomeRecurso" class="form-control" />
+                            <span asp-validation-for="NomeRecurso" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ConteudoRecurso" class="control-label"></label>
+                            @if (ViewBag.TipoRecursoAtual == "PDF")
+                            {
+                                <input type="file" name="FicheiroRecurso" accept=".pdf" class="form-control" />
+                            }
+                            else if (ViewBag.TipoRecursoAtual == "Imagem")
+                            {
+                                <input type="file" name="FicheiroRecurso" accept=".png,.jpg,.jpeg" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" name="TextoRecurso" class="form-control" />
+                            }
+                        </div>
+
+                        <div class="form-group text-center mt-4">
+                            <input type="submit" value="Guardar" class="btn btn-dark" />
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="ConteudoRecurso" class="control-label"></label>
-                @if(ViewBag.TipoRecursoAtual == "PDF")
-                {
-                    <input type="file" name="FicheiroRecurso" accept=".pdf" class="form-control" />
-                }
-                else if (ViewBag.TipoRecursoAtual == "Imagem")
-                {
-                    <input type="file" name="FicheiroRecurso" accept=".png,.jpg,.jpeg" class="form-control" />
-                } else
-                {
-                    <input type="text" name="TextoRecurso" class="form-control" />
-                }
+
+            <div class="text-center">
+                <a asp-action="Index" class="btn btn-secondary">Voltar à lista de Skills</a>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Voltar à lista de Skills</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -4,57 +4,61 @@
     ViewData["Title"] = "Detalhes";
 }
 
-<h1>Detalhes</h1>
+<h1 class="text-center" style="font-size: 2.75rem; font-family: 'Verdana', sans-serif; my-4">Detalhes</h1>
 
-<div>
-    <h4>Skills</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dificuldade)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dificuldade)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tempo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tempo)
-        </dd> 
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>        
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Custo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Custo)
-        </dd>        
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Imagem)
-        </dt>
-        <dd class = "col-sm-10">
-            <img src="~/Imagens/@Model.Imagem"
-                 alt="Imagem referente a @Model.Nome"
-                 title="@Model.Nome"
-                 width="150px" />
-        </dd>
-     
-        
 
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.SkillsId">Editar</a> |
-    <a asp-action="Index">Voltar à lista de Skills</a>
+<div class="container text-center">
+    <div class="card ">
+        <div class="card-header ">
+            <h4>@Model.Nome</h4>
+        </div>
+        <div class="card-body text-center">
+            <dl class="row">
+                <dt class="col-sm-12">
+                    @Html.DisplayNameFor(model => model.Nome)
+                </dt>
+                <dd class="col-sm-12">
+                    @Html.DisplayFor(model => model.Nome)
+                </dd>
+                <dt class="col-sm-12">
+                    @Html.DisplayNameFor(model => model.Dificuldade)
+                </dt>
+                <dd class="col-sm-12">
+                    @Html.DisplayFor(model => model.Dificuldade)
+                </dd>
+                <dt class="col-sm-12">
+                    @Html.DisplayNameFor(model => model.Tempo)
+                </dt>
+                <dd class="col-sm-12">
+                    @Html.DisplayFor(model => model.Tempo)
+                </dd>
+                <dt class="col-sm-12">
+                    @Html.DisplayNameFor(model => model.Descricao)
+                </dt>
+                <dd class="col-sm-12">
+                    @Html.DisplayFor(model => model.Descricao)
+                </dd>
+                <dt class="col-sm-12">
+                    @Html.DisplayNameFor(model => model.Custo)
+                </dt>
+                <dd class="col-sm-12">
+                    @Html.DisplayFor(model => model.Custo)
+                </dd>
+                <dt class="col-sm-12">
+                    @Html.DisplayNameFor(model => model.Imagem)
+                </dt>
+                <dd class="col-sm-12">
+                    <img src="~/Imagens/@Model.Imagem"
+                         alt="Imagem referente a @Model.Nome"
+                         title="@Model.Nome"
+                         class="img-fluid rounded"
+                         style="max-width: 300px;" />
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.SkillsId" class="btn btn-dark mx-2">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary mx-2">Voltar à lista de Skills</a>
+        </div>
+    </div>
 </div>
