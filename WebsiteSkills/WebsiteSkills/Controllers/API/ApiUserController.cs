@@ -27,9 +27,9 @@ namespace WebsiteSkills.Controllers.API
         /// <summary>
         /// Construtor
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="userManager"></param>
-        /// <param name="signInManager"></param>
+        /// <param name="context">Contexto da Base De Dados</param>
+        /// <param name="userManager">User Manager</param>
+        /// <param name="signInManager">Sign In</param>
         public ApiUserController(ApplicationDbContext context,
                UserManager<IdentityUser> userManager,
                SignInManager<IdentityUser> signInManager)

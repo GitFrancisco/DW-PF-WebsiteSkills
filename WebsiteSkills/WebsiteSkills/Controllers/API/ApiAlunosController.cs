@@ -9,21 +9,33 @@ namespace WebsiteSkills.Controllers.API
     [ApiController]
     public class ApiAlunosController : ControllerBase
     {
+        /// <summary>
+        /// Vai permitir a interação com a base de dados
+        /// </summary>
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Construtor
+        /// </summary>
+        /// <param name="context">Contexto da Base de Dados</param>
         public ApiAlunosController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Alunos
+        /// <summary>
+        /// Busca a lista de Alunos
+        /// </summary>
         [HttpGet]
         public ActionResult<IEnumerable<Aluno>> GetAlunos()
         {
             return _context.Aluno.ToList();
         }
 
-        // GET: api/Alunos/5
+        /// <summary>
+        /// Busca um Aluno específico
+        /// </summary>
+        /// <param name="id">ID do Aluno a procurar na BD</param>
         [HttpGet("{id}")]
         public ActionResult<Aluno> GetAluno(int id)
         {
@@ -37,17 +49,24 @@ namespace WebsiteSkills.Controllers.API
             return aluno;
         }
 
-        // POST: api/Alunos
+        /// <summary>
+        /// Adiciona um Aluno novo à BD
+        /// </summary>
+        /// <param name="aluno">Objeto Aluno</param>
         [HttpPost]
         public ActionResult<Aluno> PostAluno(Aluno aluno)
         {
             _context.Aluno.Add(aluno);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetAluno), new { id = aluno.Id }, aluno);
+            return Ok("Novo aluno criado.");
         }
 
-        // PUT: api/Alunos/5
+        /// <summary>
+        /// Editar um Aluno
+        /// </summary>
+        /// <param name="id">ID do Aluno a editar</param>
+        /// <param name="aluno">Objeto Aluno</param>
         [HttpPut("{id}")]
         public IActionResult PutAluno(int id, Aluno aluno)
         {
@@ -62,7 +81,11 @@ namespace WebsiteSkills.Controllers.API
             return NoContent();
         }
 
-        // DELETE: api/Alunos/5
+        /// <summary>
+        /// Apagar um Aluno específico
+        /// </summary>
+        /// <param name="id">ID do Aluno a apagar</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public IActionResult DeleteAluno(int id)
         {

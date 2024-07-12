@@ -9,21 +9,33 @@ namespace WebsiteSkills.Controllers.API
     [ApiController]
     public class ApiMentoresController : ControllerBase
     {
+        /// <summary>
+        /// Vai permitir a interação com a base de dados
+        /// </summary>
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Construtor
+        /// </summary>
+        /// <param name="context">Contexto da Base de Dados</param>
         public ApiMentoresController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Mentores
+        /// <summary>
+        /// Busca a lista de Mentores
+        /// </summary>
         [HttpGet]
         public ActionResult<IEnumerable<Mentor>> GetMentores()
         {
             return _context.Mentor.ToList();
         }
 
-        // GET: api/Mentores/5
+        /// <summary>
+        /// Busca um Mentor específico
+        /// </summary>
+        /// <param name="id">ID do Mentor a procurar na BD</param>
         [HttpGet("{id}")]
         public ActionResult<Mentor> GetMentor(int id)
         {
@@ -37,7 +49,10 @@ namespace WebsiteSkills.Controllers.API
             return mentor;
         }
 
-        // POST: api/Mentores
+        /// <summary>
+        /// Adiciona um Mentor novo à BD
+        /// </summary>
+        /// <param name="mentor">Objeto Mentor</param>
         [HttpPost]
         public ActionResult<Mentor> PostMentor(Mentor mentor)
         {
@@ -47,7 +62,11 @@ namespace WebsiteSkills.Controllers.API
             return CreatedAtAction(nameof(GetMentor), new { id = mentor.Id }, mentor);
         }
 
-        // PUT: api/Mentores/5
+        /// <summary>
+        /// Editar um Aluno
+        /// </summary>
+        /// <param name="id">ID do Mentor a editar</param>
+        /// <param name="mentor">Objeto Mentor</param>
         [HttpPut("{id}")]
         public IActionResult PutMentor(int id, Mentor mentor)
         {
@@ -62,7 +81,10 @@ namespace WebsiteSkills.Controllers.API
             return NoContent();
         }
 
-        // DELETE: api/Mentores/5
+        /// <summary>
+        /// Apagar um Mentor específico
+        /// </summary>
+        /// <param name="id">ID do Mentor a apagar</param>
         [HttpDelete("{id}")]
         public IActionResult DeleteMentor(int id)
         {
