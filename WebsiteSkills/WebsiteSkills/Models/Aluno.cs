@@ -9,11 +9,6 @@ namespace WebsiteSkills.Models
             ListaSubscricoes = new HashSet<Subscricoes>();
         }
 
-        /// <summary>
-        /// Número de aluno
-        /// </summary>
-        public int NumAluno { get; set; }
-
         // Relações com outras tabelas - Foreign Key
 
         /// <summary>
