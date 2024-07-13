@@ -10,25 +10,25 @@ function Skills() {
       
             <div className="OpcoesSkills">
               <h1> Skills</h1>
-              <Link to="/SkillPages/EditarSkills">
+              <Link to="/SkillsPages/EditarSkills">
                 <Button variant="secondary">Editar</Button>
               </Link>
-              <Link to="/SkillPages/EliminarSkills">
+              <Link to="/SkillsPages/ApagarSkills">
                 <Button variant="secondary">Apagar</Button>
               </Link>
-              <Link to="/SkillPages/AnuncioSkills">
+              <Link to="/SkillsPages/AnunciosSkills">
                 <Button variant="secondary">Anuncio</Button>
               </Link>
-              <Link to="/SkillPages/CriarAnuncioSkills">
+              <Link to="/SkillsPages/CriarAnunciosSkills">
                 <Button variant="secondary">Criar Anuncio</Button>
               </Link>
-              <Link to="/SkillPages/Recursoskills">
+              <Link to="/SkillsPages/RecursosSkills">
                 <Button variant="secondary">Recursos</Button>
               </Link>
             </div>
 
             <div className="Criação Skill">
-            <Link to="/SkillPages/CriarSkills">
+            <Link to="/SkillsPages/CriarSkills">
                 <Button variant="dark">Criar Nova Skill</Button>
               </Link>
             </div>
