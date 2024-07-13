@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebsiteSkills.Data;
 using WebsiteSkills.Models;
 
@@ -27,6 +28,7 @@ namespace WebsiteSkills.Controllers.API
         /// Busca a lista de Alunos
         /// </summary>
         [HttpGet]
+        [Route("GetAllAlunos")]
         public ActionResult<IEnumerable<Aluno>> GetAlunos()
         {
             return _context.Aluno.ToList();
@@ -36,7 +38,8 @@ namespace WebsiteSkills.Controllers.API
         /// Busca um Aluno específico
         /// </summary>
         /// <param name="id">ID do Aluno a procurar na BD</param>
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetAluno")]
         public ActionResult<Aluno> GetAluno(int id)
         {
             var aluno = _context.Aluno.Find(id);
@@ -50,43 +53,12 @@ namespace WebsiteSkills.Controllers.API
         }
 
         /// <summary>
-        /// Adiciona um Aluno novo à BD
-        /// </summary>
-        /// <param name="aluno">Objeto Aluno</param>
-        [HttpPost]
-        public ActionResult<Aluno> PostAluno(Aluno aluno)
-        {
-            _context.Aluno.Add(aluno);
-            _context.SaveChanges();
-
-            return Ok("Novo aluno criado.");
-        }
-
-        /// <summary>
-        /// Editar um Aluno
-        /// </summary>
-        /// <param name="id">ID do Aluno a editar</param>
-        /// <param name="aluno">Objeto Aluno</param>
-        [HttpPut("{id}")]
-        public IActionResult PutAluno(int id, Aluno aluno)
-        {
-            if (id != aluno.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(aluno).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            _context.SaveChanges();
-
-            return NoContent();
-        }
-
-        /// <summary>
         /// Apagar um Aluno específico
         /// </summary>
         /// <param name="id">ID do Aluno a apagar</param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("DeleteAluno")]
         public IActionResult DeleteAluno(int id)
         {
             var aluno = _context.Aluno.Find(id);
@@ -99,6 +71,50 @@ namespace WebsiteSkills.Controllers.API
             _context.SaveChanges();
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Subscreve um aluno numa Skill específica
+        /// </summary>
+        /// <param name="alunoId">ID do Aluno</param>
+        /// <param name="skillId">ID da Skill</param>
+        [HttpPost]
+        [Route("AdicionarSkillAluno")]
+        public IActionResult AdicionarSkillMentor(int alunoId, int skillId)
+        {
+            var aluno = _context.Aluno.Include(a => a.ListaSubscricoes).FirstOrDefault(a => a.Id == alunoId);
+            if (aluno == null)
+            {
+                return NotFound(new { Message = "Aluno não encontrado." });
+            }
+
+            var skill = _context.Skills.Find(skillId);
+            if (skill == null)
+            {
+                return NotFound(new { Message = "Skill não encontrada." });
+            }
+
+            // Verifica se a subscrição já existe
+            var subscricaoExistente = _context.Subscricoes
+                .FirstOrDefault(s => s.SkillsFK == skill.SkillsId && s.AlunoFK == aluno.Id);
+
+            if (subscricaoExistente != null)
+            {
+                return BadRequest(new { Message = "Aluno já subscrito nesta Skill." });
+            }
+
+            // Criação do objeto Subscricao
+            var subscricao = new Subscricoes
+            {
+                SkillsFK = skill.SkillsId,
+                AlunoFK = aluno.Id,
+                dataSubscricao = DateTime.Now
+            };
+            // Adiciona a subscrição à BD
+            _context.Subscricoes.Add(subscricao);
+            _context.SaveChanges();
+
+            return Ok(new { Message = "Aluno subscrito na Skill." });
         }
     }
 }

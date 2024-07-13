@@ -5,7 +5,8 @@ using WebsiteSkills.Models;
 
 namespace WebsiteSkills.Controllers.API
 {
-
+    [Route("api/[controller]")]
+    [ApiController]
     public class ApiUserController : ControllerBase {
         /// <summary>
         /// Vai permitir a interação com a base de dados
@@ -162,6 +163,47 @@ namespace WebsiteSkills.Controllers.API
             // Faz logout do utilizador
             await _signInManager.SignOutAsync();
             return Ok("O utilizador fez logout com sucesso!");
+        }
+
+        /// <summary>
+        /// Apaga um utilizador junto com a sua introdução como mentor/aluno na BD
+        /// </summary>
+        /// <param name="userId">ID do utilizador a apagar</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("deleteUser")]
+        public async Task<ActionResult> DeleteUser([FromQuery] string userId)
+        {
+            IdentityUser user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("Utilizador não encontrado.");
+            }
+
+            // Verificar se o utilizador é mentor ou aluno
+            // Remove o mentor/aluno da base de dados
+            if (_userManager.IsInRoleAsync(user, "Mentor").Result)
+            {
+                Mentor mentor = _context.Mentor.FirstOrDefault(m => m.UserId == user.Id);
+                _context.Mentor.Remove(mentor);
+            }
+            else
+            {
+                Aluno aluno = _context.Aluno.FirstOrDefault(a => a.UserId == user.Id);
+                _context.Aluno.Remove(aluno);
+            }
+
+            // Remove o utilizador da base de dados
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return Ok("Utilizador apagado com sucesso.");
+            }
+            else
+            {
+                return BadRequest("Erro ao apagar utilizador: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
         }
 
     }

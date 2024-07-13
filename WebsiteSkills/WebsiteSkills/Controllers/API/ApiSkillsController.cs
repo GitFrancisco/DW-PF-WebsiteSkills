@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebsiteSkills.Models;
 using WebsiteSkills.Data;
 using WebsiteSkills.Models.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebsiteSkills.Controllers.API
 {
@@ -24,13 +25,11 @@ namespace WebsiteSkills.Controllers.API
             _context = context;
         }
 
-
-        // ****** SKILLS *******
-
         /// <summary>
         /// Busca todas as skills
         /// </summary>
         [HttpGet]
+        [Route("GetAllSkills")]
         public ActionResult<IEnumerable<Skills>> GetSkills()
         {
             return _context.Skills.ToList();
@@ -40,7 +39,8 @@ namespace WebsiteSkills.Controllers.API
         /// Busca uma skill específica
         /// </summary>
         /// <param name="id">ID da Skill a procurar na BD</param>
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetSkill")]
         public ActionResult<Skills> GetSkill(int id)
         {
             var skill = _context.Skills.Find(id);
@@ -58,6 +58,7 @@ namespace WebsiteSkills.Controllers.API
         /// </summary>
         /// <param name="dto">Data Transfer Object para Skills</param>
         [HttpPost]
+        [Route("AddSkill")]
         public ActionResult<Skills> PostSkill([FromBody] SkillsDTO dto)
         {
             // Criar novo objeto Skill
@@ -81,18 +82,24 @@ namespace WebsiteSkills.Controllers.API
         /// <summary>
         /// Editar uma skill
         /// </summary>
-        /// <param name="id">ID da Skill a procurar na BD</param>
-        /// <param name="skill">Skill</param>
+        /// <param name="dto">Skill DTO</param>
+        /// <param name="id">ID da Skill a editar</param>
         /// <returns></returns>
-        [HttpPut("{id}")]
-        public IActionResult PutSkill(int id, Skills skill)
+        [HttpPost]
+        [Route("EditSkill")]
+        public IActionResult EditSkill([FromBody] SkillsDTO dto, [FromQuery] int id)
         {
-            if (id != skill.SkillsId)
-            {
-                return BadRequest();
-            }
+            // Procurar Skill (existente) na BD
+            Skills skill = _context.Skills.Where(s => s.SkillsId == id).FirstOrDefault();
 
-            _context.Entry(skill).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            skill.Nome = dto.Nome;
+            skill.Dificuldade = dto.Dificuldade;
+            skill.Tempo = dto.Tempo;
+            skill.Descricao = dto.Descricao;
+            skill.Custo = dto.Custo;
+            skill.Imagem = dto.Imagem;
+
+            _context.Skills.Update(skill);
             _context.SaveChanges();
 
             return NoContent();
@@ -102,7 +109,8 @@ namespace WebsiteSkills.Controllers.API
         /// Apagar uma skill
         /// </summary>
         /// <param name="id">ID da Skill a apagar</param>
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("DeleteSkill")]
         public IActionResult DeleteSkill(int id)
         {
             var skill = _context.Skills.Find(id);
@@ -116,5 +124,7 @@ namespace WebsiteSkills.Controllers.API
 
             return NoContent();
         }
+
+
     }
 }

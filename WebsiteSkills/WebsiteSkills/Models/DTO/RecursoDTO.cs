@@ -7,5 +7,7 @@ namespace WebsiteSkills.Models.DTO
         public string NomeRecurso { get; set; }
         public string TipoRecurso { get; set; }
         public int SkillsFK { get; set; }
+
+        public string ConteudoRecurso { get; set; }
     }
 }

@@ -10,23 +10,38 @@ namespace WebsiteSkills.Controllers.API
     [ApiController]
     public class ApiRecursosController : ControllerBase
     {
-
+        /// <summary>
+        /// Vai permitir a interação com a base de dados
+        /// </summary>
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Construtor
+        /// </summary>
+        /// <param name="context">BD</param>
         public ApiRecursosController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Recurso
+        /// <summary>
+        /// Busca todos os recursos da BD
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [Route("GetAllRecursos")]
         public ActionResult<IEnumerable<Recurso>> GetRecursos()
         {
             return _context.Recurso.ToList();
         }
 
-        // GET: api/Recurso/5
-        [HttpGet("{id}")]
+        /// <summary>
+        /// Busca um recurso específico
+        /// </summary>
+        /// <param name="id">ID de um recurso específico</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetRecurso")]
         public ActionResult<Recurso> GetRecurso(int id)
         {
             var recurso = _context.Recurso.Find(id);
@@ -39,8 +54,13 @@ namespace WebsiteSkills.Controllers.API
             return recurso;
         }
 
-        // POST: api/Recurso
+        /// <summary>
+        /// Adiciona um recurso
+        /// </summary>
+        /// <param name="dto">Recurso DTO</param>
+        /// <returns></returns>
         [HttpPost]
+        [Route("AddRecurso")]
         public ActionResult<Recurso> PostRecurso([FromBody] RecursoDTO dto)
         {
             Recurso recurso = new Recurso();
@@ -55,23 +75,35 @@ namespace WebsiteSkills.Controllers.API
             return Ok();
         }
 
-        // PUT: api/Recurso/5
-        [HttpPut("{id}")]
-        public IActionResult PutRecurso(int id, Recurso recurso)
+        /// <summary>
+        /// Editar um recurso
+        /// </summary>
+        /// <param name="dto">Recurso DTO</param>
+        /// <param name="id">ID do Recurso a editar</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("EditRecurso")]
+        public IActionResult EditRecurso([FromBody] RecursoDTO dto, [FromQuery] int id)
         {
-            if (id != recurso.IdRecurso)
-            {
-                return BadRequest();
-            }
+            // Procurar Skill (existente) na BD
+            Recurso recurso = _context.Recurso.Where(r => r.IdRecurso == id).FirstOrDefault();
 
-            _context.Entry(recurso).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            recurso.NomeRecurso = dto.NomeRecurso;
+            recurso.ConteudoRecurso = dto.ConteudoRecurso;
+
+            _context.Recurso.Update(recurso);
             _context.SaveChanges();
 
             return NoContent();
         }
 
-        // DELETE: api/Recurso/5
-        [HttpDelete("{id}")]
+        /// <summary>
+        /// Apagar um recurso
+        /// </summary>
+        /// <param name="id">ID do recurso a apagar</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("DeleteRecurso")]
         public IActionResult DeleteRecurso(int id)
         {
             var recurso = _context.Recurso.Find(id);

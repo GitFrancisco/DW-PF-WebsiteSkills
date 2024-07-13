@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebsiteSkills.Data;
 using WebsiteSkills.Models;
 
@@ -27,6 +28,7 @@ namespace WebsiteSkills.Controllers.API
         /// Busca a lista de Mentores
         /// </summary>
         [HttpGet]
+        [Route("GetAllMentores")]
         public ActionResult<IEnumerable<Mentor>> GetMentores()
         {
             return _context.Mentor.ToList();
@@ -36,7 +38,8 @@ namespace WebsiteSkills.Controllers.API
         /// Busca um Mentor específico
         /// </summary>
         /// <param name="id">ID do Mentor a procurar na BD</param>
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetMentor")]
         public ActionResult<Mentor> GetMentor(int id)
         {
             var mentor = _context.Mentor.Find(id);
@@ -50,54 +53,34 @@ namespace WebsiteSkills.Controllers.API
         }
 
         /// <summary>
-        /// Adiciona um Mentor novo à BD
+        /// Adiciona uma Skill à lista de Skills de um Mentor específico
         /// </summary>
-        /// <param name="mentor">Objeto Mentor</param>
+        /// <param name="mentorId">ID do Mentor</param>
+        /// <param name="skillId">ID da Skill</param>
         [HttpPost]
-        public ActionResult<Mentor> PostMentor(Mentor mentor)
+        [Route("AdicionarSkillMentor")]
+        public IActionResult AdicionarSkillMentor(int mentorId, int skillId)
         {
-            _context.Mentor.Add(mentor);
-            _context.SaveChanges();
-
-            return CreatedAtAction(nameof(GetMentor), new { id = mentor.Id }, mentor);
-        }
-
-        /// <summary>
-        /// Editar um Aluno
-        /// </summary>
-        /// <param name="id">ID do Mentor a editar</param>
-        /// <param name="mentor">Objeto Mentor</param>
-        [HttpPut("{id}")]
-        public IActionResult PutMentor(int id, Mentor mentor)
-        {
-            if (id != mentor.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(mentor).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            _context.SaveChanges();
-
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Apagar um Mentor específico
-        /// </summary>
-        /// <param name="id">ID do Mentor a apagar</param>
-        [HttpDelete("{id}")]
-        public IActionResult DeleteMentor(int id)
-        {
-            var mentor = _context.Mentor.Find(id);
+            var mentor = _context.Mentor.Include(m => m.ListaSkills).FirstOrDefault(m => m.Id == mentorId);
             if (mentor == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "Mentor não encontrado." });
             }
 
-            _context.Mentor.Remove(mentor);
+            var skill = _context.Skills.Find(skillId);
+            if (skill == null)
+            {
+                return NotFound(new { Message = "Skill não encontrado." });
+            }
+
+            mentor.ListaSkills.Add(skill);
             _context.SaveChanges();
 
-            return NoContent();
+            return Ok(new { Message = "Skill adicionada ao mentor." });
         }
     }
 }
+
+
+
+
