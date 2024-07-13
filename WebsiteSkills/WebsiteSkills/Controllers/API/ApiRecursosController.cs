@@ -36,6 +36,21 @@ namespace WebsiteSkills.Controllers.API
         }
 
         /// <summary>
+        /// Busca todos os Recursos relativos a uma Skill
+        /// </summary>
+        [HttpGet]
+        [Route("SkillRecursos")]
+        public ActionResult<IEnumerable<Anuncio>> GetAllSkillRecursos(int id)
+        {
+            var recursos = _context.Recurso.Where(r => r.SkillsFK == id).ToList();
+            if (recursos == null || recursos.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(recursos);
+        }
+
+        /// <summary>
         /// Busca um recurso específico
         /// </summary>
         /// <param name="id">ID de um recurso específico</param>

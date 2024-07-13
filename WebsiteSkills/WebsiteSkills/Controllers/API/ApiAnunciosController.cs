@@ -35,6 +35,21 @@ namespace WebsiteSkills.Controllers.API
         }
 
         /// <summary>
+        /// Busca todos os Anuncios relativos a uma Skill
+        /// </summary>
+        [HttpGet]
+        [Route("SkillAnuncios")]
+        public ActionResult<IEnumerable<Anuncio>> GetAllSkillAnuncios(int id)
+        {
+            var anuncios = _context.Anuncio.Where(a => a.SkillsFK == id).ToList();
+            if (anuncios == null || anuncios.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(anuncios);
+        }
+
+        /// <summary>
         /// Busca um anúncio específico
         /// </summary>
         /// <param name="id">ID do anúncio a procurar na BD</param>

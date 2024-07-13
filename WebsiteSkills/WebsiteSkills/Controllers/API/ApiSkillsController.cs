@@ -125,6 +125,29 @@ namespace WebsiteSkills.Controllers.API
             return NoContent();
         }
 
+        /// <summary>
+        /// Upload de uma imagem
+        /// </summary>
+        /// <param name="file">Imagem a ser carregada</param>
+        [HttpPost]
+        [Route("UploadImage")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Nenhum arquivo foi enviado.");
+            }
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Imagens", file.FileName);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { filePath = path });
+        }
+
 
     }
 }
