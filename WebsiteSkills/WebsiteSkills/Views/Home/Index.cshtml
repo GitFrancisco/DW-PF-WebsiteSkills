@@ -2,7 +2,49 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+    .navbar {
+        z-index: 10;
+        position: relative;
+        width: 100%;
+    }
+
+    .background-image {
+        background-image: url('@Url.Content("~/imagens/Background_MP.png")');
+        background-size: cover;
+        background-position: center;
+        height: 81.4vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        top:-16px;
+        right:96px;
+    }
+
+    .text-content {
+        font-family: 'Verdana';
+        color: white;
+        text-align: center;
+    }
+</style>
+
+<div class="background-image">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 text-center text-content">
+                <h1 class="display-3">Aprenda com os melhores.</h1>
+                <p class="lead">Potencialize seu talento com mentoria personalizada.</p>
+                <a href="/Skills" class="btn btn-dark btn-lg">As nossas skills</a>
+            </div>
+        </div>
+    </div>
 </div>

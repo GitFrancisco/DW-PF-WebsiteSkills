@@ -4,7 +4,7 @@
     ViewData["Title"] = "Criar Anúncio";
 }
 
-<h2>Criar Anúncio</h2>
+<h2 class="text-center" style="font-size: 2.75rem; font-family: 'Verdana', sans-serif; my-4">Criar Anúncio</h2>
 
 @if (ViewBag.Message != null)
 {
@@ -19,12 +19,12 @@ else
         <form asp-action="CriarAnuncios" method="post">
             <div class="form-group">
                 <label class="control-label">Texto do Anúncio</label>
-                <input class="form-control" name="texto" maxlength="200"/>
+                <textarea class="form-control" name="texto" maxlength="200"> </textarea>
             </div>
 
             <input type="hidden" name="id" value="@Model.SkillsId" />
-            <button type="submit" class="btn btn-primary">Submeter</button>
-            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-dark my-2 mx-2">Submeter</button>
+            <a asp-action="Index" class="btn btn-secondary my-2">Cancelar</a>
         </form>
     </div>
 }

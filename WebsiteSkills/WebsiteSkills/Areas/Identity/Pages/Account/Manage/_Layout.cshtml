@@ -1,0 +1,29 @@
+﻿@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    }
+}
+
+<h1 class="text-center" style="font-size: 2.75rem; font-family: 'Verdana', sans-serif; margin-top: 1rem; margin-bottom: 1rem;">Gerir a tua Conta</h1>
+
+<div>
+    <h2 class="text-center" style="font-size: 2.75rem; font-family: 'Verdana', sans-serif; margin-top: 1rem; margin-bottom: 1rem;" >Mudas as definições da tua conta</h2>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <partial name="_ManageNav" />
+        </div>
+        <div class="col-md-9">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}
