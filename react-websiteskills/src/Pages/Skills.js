@@ -8,22 +8,28 @@ import Button from 'react-bootstrap/Button';
 function Skills() {
     return <div className="Skills">
       
-            <div>
+            <div className="OpcoesSkills">
               <h1> Skills</h1>
               <Link to="/SkillPages/EditarSkills">
-                <Button variant="secondary">As nossas skills</Button>
+                <Button variant="secondary">Editar</Button>
               </Link>
               <Link to="/SkillPages/EliminarSkills">
-                <Button variant="secondary">As nossas skills</Button>
+                <Button variant="secondary">Apagar</Button>
               </Link>
               <Link to="/SkillPages/AnuncioSkills">
-                <Button variant="secondary">As nossas skills</Button>
+                <Button variant="secondary">Anuncio</Button>
               </Link>
               <Link to="/SkillPages/CriarAnuncioSkills">
-                <Button variant="secondary">As nossas skills</Button>
+                <Button variant="secondary">Criar Anuncio</Button>
               </Link>
               <Link to="/SkillPages/Recursoskills">
-                <Button variant="secondary">As nossas skills</Button>
+                <Button variant="secondary">Recursos</Button>
+              </Link>
+            </div>
+
+            <div className="Criação Skill">
+            <Link to="/SkillPages/CriarSkills">
+                <Button variant="dark">Criar Nova Skill</Button>
               </Link>
             </div>
     
