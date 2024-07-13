@@ -4,98 +4,61 @@
     ViewData["Title"] = "Índice";
 }
 
-<h1>Índice</h1>
+<h1 class="text-center" style="font-size: 2.75rem; font-family: 'Verdana', sans-serif;">Skills</h1>
 
 <p>
     @if (User.Identity.IsAuthenticated && User.IsInRole("Administrador"))
     {
-    <a asp-action="Create">Criar nova Skill</a>
+        <a asp-action="Create" class="btn btn-dark">Criar Nova Skill</a>
     }
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Skill.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Skill.Dificuldade)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Skill.Tempo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Skill.Descricao)
-            </th>              
-            <th> 
-                @Html.DisplayNameFor(model => model.Skill.Custo)
-            </th>            
-            <th>
-                @Html.DisplayNameFor(model => model.Skill.Imagem)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Skill.Nome)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Skill.Dificuldade)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Skill.Tempo)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Skill.Descricao)
-            </td>            
-            <td>
-                    @Html.DisplayFor(modelItem => item.Skill.Custo)
-            </td>
-            <td>
-                    <img src="~/Imagens/@Html.DisplayFor(modelItem => item.Skill.Imagem)"
-                         alt="Imagem referente a @Html.DisplayFor(modelItem => item.Skill.Nome)"
-                         title="@Html.DisplayFor(modelItem => item.Skill.Nome)"
-                         width="150px" />
-            </td>
-            <td>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <text>
-                            @* Visivel para todos *@
-                            <a asp-action="Details" asp-route-id="@item.Skill.SkillsId">Detalhes</a>
-                            <a asp-action="Recursos" asp-route-id="@item.Skill.SkillsId">Recursos</a>
 
-                            @* Visivel para mentores *@
-                            @if (User.IsInRole("Mentor") || User.IsInRole("Administrador"))
-                            {
-                                <text>
-                                    <a asp-action="AdicionarSkillsMentores" asp-route-id="@item.Skill.SkillsId">Adicionar à lista de Skills</a>
-                                </text>
-                            }
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <a asp-action="Details" asp-route-id="@item.Skill.SkillsId">
+                        <img src="~/Imagens/@item.Skill.Imagem"
+                             class="card-img-top"
+                             alt="Imagem referente a @item.Skill.Nome"
+                             title="@item.Skill.Nome" style="height: 300px; object-fit: cover;" />
+                    </a>
 
-                            @* Visivel para alunos *@
-                            @if ((User.IsInRole("Aluno") && !item.IsSubscribed) || User.IsInRole("Administrador"))
-                            {
-                                <text>
-                                    <a asp-action="Checkout" asp-route-id="@item.Skill.SkillsId">Subscrever</a>
-                                </text>
-                            }
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@item.Skill.Nome</h5>
+                        <p class="card-text"><small>@item.Skill.Descricao</small></p>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="d-flex justify-content-center flex-wrap">
+                                <a asp-action="Recursos" asp-route-id="@item.Skill.SkillsId" class="btn btn-secondary btn-sm mx-2 my-2">Recursos</a>
+                                @if (User.IsInRole("Mentor") || User.IsInRole("Administrador"))
+                                {
+                                    <a asp-action="AdicionarSkillsMentores" asp-route-id="@item.Skill.SkillsId" class="btn btn-secondary btn-sm mx-2 my-2">Adicionar à lista de Skills</a>
+                                    <a asp-action="Anuncios" asp-route-id="@item.Skill.SkillsId" class="btn btn-secondary btn-sm mx-2 my-2">Anuncios</a>
+                                    <a asp-action="CriarAnuncios" asp-route-id="@item.Skill.SkillsId" class="btn btn-secondary btn-sm mx-2 my-2">Criar Anuncios</a>
+                                }
+                                @if ((User.IsInRole("Aluno") && !item.IsSubscribed) || User.IsInRole("Administrador"))
+                                {
+                                    <a asp-action="Checkout" asp-route-id="@item.Skill.SkillsId" class="btn btn-secondary btn-sm mx-2 my-2">Subscrever</a>
+                                }
+                                @if (User.IsInRole("Administrador"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Skill.SkillsId" class="btn btn-secondary btn-sm mx-2 my-2">Editar</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Skill.SkillsId" class="btn btn-secondary btn-sm mx-2 my-2">Apagar</a>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 
-                            @if (User.IsInRole("Administrador"))
-                            {
-                                <text>
-                                    |
-                                    <a asp-action="Edit" asp-route-id="@item.Skill.SkillsId">Editar</a> |
-                                    <a asp-action="Delete" asp-route-id="@item.Skill.SkillsId">Apagar</a> 
-                                </text>
-                            }
-                        </text>
-                    }
-            </td>
-        </tr>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
-    </tbody>
-</table>

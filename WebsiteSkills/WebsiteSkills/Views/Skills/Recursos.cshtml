@@ -4,29 +4,50 @@
     ViewData["Title"] = "Recursos";
 }
 
-<h1>Recursos</h1>
+<h1 class="text-center" style="font-size: 2.75rem; font-family: 'Verdana', sans-serif; my-4">Recursos</h1>
 
-@foreach (var item in ViewBag.Recursos)
-{
-    <h3>@item.NomeRecurso</h3>
-    if (item.TipoRecurso == "PDF")
-    {
-        // Código para PDF
-        <embed src="~/FicheirosRecursos/@item.ConteudoRecurso" width="800px" height="1000px" />
-    }
-    else if (item.TipoRecurso == "Imagem")
-    {
-        // Código para Imagem
-        <img src="~/FicheirosRecursos/@item.ConteudoRecurso"
-             alt="Imagem referente a @item.NomeRecurso"
-             title="@item.NomeRecurso"
-             width="150px" />
-    }
-    else
-    {
-        // Código para outros tipos
-        <text>@item.ConteudoRecurso</text>
+<div class="container">
+    <div class="row">
+        @foreach (var item in ViewBag.Recursos)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@item.NomeRecurso</h5>
+                        <div class="card-text text-center">
+                            @if (item.TipoRecurso == "PDF")
+                            {
+                                <!-- Código para PDF -->
+                                <embed src="~/FicheirosRecursos/@item.ConteudoRecurso" type="application/pdf" width="100%" height="400px" class="mb-3" />
+                            }
+                            else if (item.TipoRecurso == "Imagem")
+                            {
+                                <!-- Código para Imagem -->
+                                <img src="~/FicheirosRecursos/@item.ConteudoRecurso"
+                                     alt="Imagem referente a @item.NomeRecurso"
+                                     title="@item.NomeRecurso"
+                                     class="img-fluid mb-3" />
+                            }
+                            else
+                            {
+                                <!-- Código para outros tipos -->
+                                <p>@item.ConteudoRecurso</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a asp-action="Edit" asp-route-id="@item.IdRecurso" class="btn btn-sm btn-secondary">Editar</a>
+                        <a asp-action="Details" asp-route-id="@item.IdRecurso" class="btn btn-sm btn-secondary">Detalhes</a>
+                        <a asp-action="Delete" asp-route-id="@item.IdRecurso" class="btn btn-sm btn-secondary ">Apagar</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
-

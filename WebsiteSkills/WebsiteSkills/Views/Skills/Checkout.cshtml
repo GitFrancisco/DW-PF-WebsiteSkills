@@ -4,46 +4,74 @@
     ViewData["Title"] = "Checkout";
 }
 
-<h2>Confirmar Subscrição</h2>
+<h2 class="text-center" style="font-size: 2.75rem; font-family: 'Verdana', sans-serif; my-4">Confirmar Subscrição</h2>
 
 @if (ViewBag.Message != null)
 {
     <div class="alert alert-warning">
         @ViewBag.Message
     </div>
-    <a asp-action="Index" class="btn btn-secondary">Voltar ao índice de Skills</a>
+    <div class="text-center">
+        <a asp-action="Index" class="btn btn-secondary">Voltar ao índice de Skills</a>
+    </div>
 }
 else
 {
-    <div>
-        <h3>@Model.Nome</h3>
-        <p><strong>Dificuldade:</strong> @Model.Dificuldade</p>
-        <p><strong>Tempo:</strong> @Model.Tempo</p>
-        <p><strong>Descrição:</strong> @Model.Descricao</p>
-        <p><strong>Custo:</strong> @Model.Custo€</p>
-        <img src="~/Imagens/@Model.Imagem" alt="Imagem da Skill @Model.Nome" width="150px" />
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h3 class="card-title">@Model.Nome</h3>
+                                <p class="card-text"><strong>Dificuldade:</strong> @Model.Dificuldade</p>
+                                <p class="card-text"><strong>Tempo:</strong> @Model.Tempo</p>
+                                <p class="card-text"><strong>Descrição:</strong> @Model.Descricao</p>
+                                <p class="card-text"><strong>Custo:</strong> @Model.Custo€</p>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <img src="~/Imagens/@Model.Imagem" alt="Imagem da Skill @Model.Nome" class="img-fluid" width: 300px; height: auto;" />
+                            </div>
+                        </div>
 
-        <form asp-action="CheckoutConfirmed" method="post">
-            <div class="form-group">
-                <label class="control-label">Número do cartão</label>
-                <input class="form-control" name="CCnum" maxlength="16" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Nome no cartão</label>
-                <input class="form-control" name="CCnome" maxlength="507" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Validade</label>
-                <input class="form-control" name="CCvalidade" maxlength="10" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Código de segurança (CVV)</label>
-                <input class="form-control" name="CCcvv" maxlength="3" />
-            </div>
+                        <form asp-action="CheckoutConfirmed" method="post" class="mt-4">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Número do cartão</label>
+                                    <input class="form-control" name="CCnum" maxlength="16" placeholder="Digite o número do cartão" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Nome no cartão</label>
+                                    <input class="form-control" name="CCnome" maxlength="50" placeholder="Digite o nome no cartão" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Validade</label>
+                                    <input class="form-control" name="CCvalidade" maxlength="5" placeholder="MM/AA" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Código de segurança (CVV)</label>
+                                    <input class="form-control" name="CCcvv" maxlength="3" placeholder="CVV" />
+                                </div>
+                            </div>
 
-            <input type="hidden" name="id" value="@Model.SkillsId" />
-            <button type="submit" class="btn btn-primary">Confirmar Subscrição</button>
-            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-        </form>
+                            <input type="hidden" name="id" value="@Model.SkillsId" />
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-dark">Confirmar Subscrição</button>
+                                <a asp-action="Index" class="btn btn-secondary ml-2">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -4,57 +4,74 @@
     ViewData["Title"] = "Apagar";
 }
 
-<h1>Apagar</h1>
+<h1 class="text-center" style="font-size: 2.75rem; font-family: 'Verdana', sans-serif; my-4">Apagar</h1>
 
-<h3>Confirma a remoção desta Skill?</h3>
-<div>
-    <h4>Skills</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dificuldade)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dificuldade) 
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tempo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tempo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>        
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Custo)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Custo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Imagem)
-        </dt>
-        <dd class = "col-sm-10">
-            <img src="~/Imagens/@Model.Imagem"
-                 alt="Imagem referente a @Model.Nome"
-                 title="@Model.Nome"
-                 width="150px" />
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="SkillsId" />
-        <input type="submit" value="Apagar" class="btn btn-danger" /> |
-        <a asp-action="Index">Voltar à lista de Skills</a>
-    </form>
+<h3 class="text-center">Confirma a remoção desta Skill?</h3>
+
+
+<div class="container text-center">
+    <div class="card ">
+        <div class="card-header ">
+            <h4>@Model.Nome</h4>
+        </div>
+    <div class="card-body text-center">
+        <dl class="row">
+             <dt class="col-sm-12">
+                @Html.DisplayNameFor(model => model.Nome)
+             </dt>
+             <dd class="col-sm-12">
+                            @Html.DisplayFor(model => model.Nome)
+             </dd>
+             <dt class="col-sm-12">
+                            @Html.DisplayNameFor(model => model.Dificuldade)
+             </dt>
+             <dd class="col-sm-12">
+                            @Html.DisplayFor(model => model.Dificuldade)
+             </dd>
+             <dt class="col-sm-12">
+                            @Html.DisplayNameFor(model => model.Tempo)
+             </dt>
+                        <dd class="col-sm-12">
+                            @Html.DisplayFor(model => model.Tempo)
+                        </dd>
+                        <dt class="col-sm-12">
+                            @Html.DisplayNameFor(model => model.Descricao)
+                        </dt>
+                        <dd class="col-sm-12">
+                            @Html.DisplayFor(model => model.Descricao)
+                        </dd>
+                        <dt class="col-sm-12">
+                            @Html.DisplayNameFor(model => model.Custo)
+                        </dt>
+                        <dd class="col-sm-12">
+                            @Html.DisplayFor(model => model.Custo)
+                        </dd>
+                        <dt class="col-sm-12">
+                            @Html.DisplayNameFor(model => model.Imagem)
+                        </dt>
+                        <dd class="col-sm-12">
+                            <img src="~/Imagens/@Model.Imagem"
+                                 alt="Imagem referente a @Model.Nome"
+                                 title="@Model.Nome"
+                                 class="img-fluid rounded"
+                                 style="max-width: 300px;" />
+                        </dd>
+                    </dl>
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="SkillsId" />
+                        <div class="text-center">
+                            <input type="submit" value="Apagar" class="btn btn-danger mx-2" />
+                            <a asp-action="Index" class="btn btn-secondary mx-2">Voltar à lista de Skills</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
