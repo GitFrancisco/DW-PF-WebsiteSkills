@@ -62,6 +62,26 @@ namespace WebsiteSkills.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Mentor",
+                            NormalizedName = "MENTOR"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "Aluno",
+                            NormalizedName = "ALUNO"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            Name = "Administrador",
+                            NormalizedName = "ADMINISTRADOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
