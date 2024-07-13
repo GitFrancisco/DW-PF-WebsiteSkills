@@ -6,6 +6,7 @@ import Recursos from "./Pages/Recursos";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
