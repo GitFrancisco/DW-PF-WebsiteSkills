@@ -17,7 +17,7 @@ namespace WebsiteSkills.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -62,6 +62,26 @@ namespace WebsiteSkills.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Mentor",
+                            NormalizedName = "MENTOR"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "Aluno",
+                            NormalizedName = "ALUNO"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            Name = "Administrador",
+                            NormalizedName = "ADMINISTRADOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -381,7 +401,7 @@ namespace WebsiteSkills.Migrations
 
                     b.ToTable("Utilizadores");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Utilizadores");
+                    b.HasDiscriminator().HasValue("Utilizadores");
 
                     b.UseTphMappingStrategy();
                 });
@@ -389,9 +409,6 @@ namespace WebsiteSkills.Migrations
             modelBuilder.Entity("WebsiteSkills.Models.Aluno", b =>
                 {
                     b.HasBaseType("WebsiteSkills.Models.Utilizadores");
-
-                    b.Property<int>("NumAluno")
-                        .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Aluno");
                 });
