@@ -35,9 +35,9 @@ function App() {
           <Route path="/SkillsPages/CriarAnunciosSkills/:skillsId" component={CriarAnunciosSkills} />
           <Route path="/SkillsPages/RecursosSkills/:skillsId" component={RecursosSkills} />
           <Route path="/SkillsPages/CriarSkills" component={CriarSkills} />
-          <Route path="/RecursosPages/ApagarRecursos" component={ApagarRecursos} />
-          <Route path="/RecursosPages/EditarRecursos" component={EditarRecursos} />
-          <Route path="/RecursosPages/DetalhesRecursos" component={DetalhesRecursos} />
+          <Route path="/RecursosPages/ApagarRecursos/:idRecurso" component={ApagarRecursos} />
+          <Route path="/RecursosPages/EditarRecursos/:idRecurso" component={EditarRecursos} />
+          <Route path="/RecursosPages/DetalhesRecursos/:idRecurso" component={DetalhesRecursos} />
           <Route path="/RecursosPages/CriarRecursos" component={CriarRecursos} />
         </Switch>
       </Router>
