@@ -41,7 +41,6 @@ namespace WebsiteSkills.Controllers.API
         /// </summary>
         [HttpGet]
         [Route("SkillAnuncios")]
-        [Authorize(Roles = "Mentor, Aluno")]
         public ActionResult<IEnumerable<Anuncio>> GetAllSkillAnuncios(int id)
         {
             var anuncios = _context.Anuncio.Where(a => a.SkillsFK == id).ToList();
