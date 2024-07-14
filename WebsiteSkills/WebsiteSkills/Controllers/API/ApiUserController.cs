@@ -21,7 +21,7 @@ namespace WebsiteSkills.Controllers.API
 
         /// <summary>
         /// Autenticação
-        /// SignInManager é uma classe que faz parte do Identity, que é um sistema de autenticação.
+        /// SignInManager é uma classe que faz parte do Identity, que é um sistema   de autenticação.
         /// </summary>
         public SignInManager<IdentityUser> _signInManager;
 
