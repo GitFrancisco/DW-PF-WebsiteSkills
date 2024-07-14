@@ -10,7 +10,8 @@ const DetalhesRecurso = () => {
   useEffect(() => {
     fetch(`https://localhost:7263/api/ApiRecursos/GetRecurso?id=${idRecurso}`, {
       headers: {
-        'accept': 'text/plain'
+        'accept': 'text/plain',
+        Authorization: "Bearer " + localStorage.getItem("jwt")
       }
     })
       .then(response => response.json())

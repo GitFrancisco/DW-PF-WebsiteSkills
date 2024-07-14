@@ -15,7 +15,8 @@ function CriarRecursos() {
             method: 'POST',
             headers: {
                 'accept': 'text/plain',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: "Bearer " + localStorage.getItem("jwt")
             },
             body: JSON.stringify({
                 'nomeRecurso': recursoNome,

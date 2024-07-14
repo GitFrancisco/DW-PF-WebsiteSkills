@@ -13,7 +13,8 @@ const EditarRecursos = () => {
   useEffect(() => {
     fetch(`https://localhost:7263/api/ApiRecursos/GetRecurso?id=${idRecurso}`, {
       headers: {
-        'accept': 'text/plain'
+        'accept': 'text/plain',
+        'Authorization': "Bearer " + localStorage.getItem("jwt")
       }
     })
       .then(response => response.json())
@@ -31,45 +32,54 @@ const EditarRecursos = () => {
       method: 'POST',
       headers: {
         'accept': 'text/plain',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + localStorage.getItem("jwt")
       },
       body: JSON.stringify({
-        'nomeRecurso': recursoNome,
-        'tipoRecurso': recurso.tipoRecurso,
-        'skillsFK': recurso.skillsFK,
-        'conteudoRecurso': recursoConteudo
+        nomeRecurso: recursoNome,
+        tipoRecurso: recurso.tipoRecurso,
+        skillsFK: recurso.skillsFK,
+        conteudoRecurso: recursoConteudo,
       })
     })
     .then(response => {
       if (response.ok) {
         history.push("../../Recursos");
       } else {
-        throw new Error("Erro ao editar Recurso");
+        response.text().then(text => {
+          console.error("Erro ao editar Recurso:", text);
+        });
       }
     })
     .catch(error => {
-      console.error(error);
+      console.error("Erro ao editar Recurso:", error);
     });
   };
+  
 
   const handleUpload = (e) => {
     const file = e.target.files[0];
-    setConteudo(file.name);
+    setConteudo(file.name); 
+  
     const formData = new FormData();
     formData.append("file", file);
-
+  
     fetch("https://localhost:7263/api/ApiRecursos/UploadFile", {
-      method: "POST",
-      body: formData,
+      method: 'POST',
+      headers: {
+        'Authorization': "Bearer " + localStorage.getItem("jwt")
+      },
+      body: formData
     })
     .then(response => response.json())
     .then(data => {
       console.log(data);
     })
     .catch(error => {
-      console.error(error);
+      console.error("Erro ao fazer upload do arquivo:", error);
     });
   };
+  
 
   return (
     <div className="container">

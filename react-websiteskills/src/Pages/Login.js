@@ -12,28 +12,32 @@ function Login() {
   const loginUser = async () => {
     try {
       const response = await fetch(
-        `https://localhost:7263/api/ApiUser/loginUser?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+        `https://localhost:7263/api/ApiUser/loginUser?email=${encodeURIComponent(
+          email
+        )}&password=${encodeURIComponent(password)}`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Accept': '*/*',
+            Accept: "*/*",
           },
-          body: ''
+          body: "",
         }
       );
 
       if (response.ok) {
         const token = await response.text();
-        console.log('Login bem-sucedido:', token);
+        console.log("Login bem-sucedido:", token);
         // Guarda o token (JWT) no localStorage
-        localStorage.setItem('jwt', token);
+        localStorage.setItem("jwt", token);
         // Redireciona para a página inicial
-        history.push('/');
+        history.push("/");
+        // Faz reload à página para garantir que a NavBar atualiza
+        window.location.reload();
       } else {
-        console.error('Erro ao fazer login:', response.statusText);
+        console.error("Erro ao fazer login:", response.statusText);
       }
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
+      console.error("Erro ao fazer login:", error);
     }
   };
 

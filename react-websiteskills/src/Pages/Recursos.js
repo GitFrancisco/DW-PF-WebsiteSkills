@@ -14,6 +14,7 @@ function Recursos() {
     fetch("https://localhost:7263/api/ApiRecursos/GetAllRecursos", {
       headers: {
         accept: "application/json",
+        Authorization: "Bearer " + localStorage.getItem("jwt")
       },
     })
       .then((response) => response.json())
