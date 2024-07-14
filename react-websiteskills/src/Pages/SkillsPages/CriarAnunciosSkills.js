@@ -1,18 +1,16 @@
-import React from "react";
-import Button from 'react-bootstrap/Button';
-import FormControl from 'react-bootstrap/FormControl';
-import { useParams, useHistory } from 'react-router-dom';
-import { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { useParams, useHistory, Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import FormControl from "react-bootstrap/FormControl";
+import Alert from "react-bootstrap/Alert";
+import "../../Styles/SkillsPages/CriarAnunciosSkills.css";
 
-function CriarAnunciosSkills(){
-    // Obter o id da skill a ser editada
-    let { skillsId } = useParams();
-    // Obter o histórico de navegação
-    let history = useHistory();
+function CriarAnunciosSkills() {
+  let { skillsId } = useParams();
+  let history = useHistory();
 
-    // Estados para os campos do formulário
-    const [textoAnuncio, setTextoAnuncio] = useState("");
+  const [textoAnuncio, setTextoAnuncio] = useState("");
+  const [message, setMessage] = useState(null);
 
     // Método para fazer a criação de um anúncio
     const addAnuncio = () => {
@@ -36,17 +34,36 @@ function CriarAnunciosSkills(){
     }
 
 
-    return (
-        <div className="Apagar Skill">
-            <h1>Criar Anúncio</h1>
-            <h2>Texto do Anúncio</h2>
-            <FormControl as="textarea" rows={6} placeholder="" onChange={(e) => setTextoAnuncio(e.target.value)}/>
-            <Button variant="dark" onClick={addAnuncio}>Submeter</Button>
-            <Link to="../../Skills">
-                <Button variant="secondary">Cancelar</Button>
-            </Link>
+  return (
+    <div className="container">
+      <h2 className="text-center my-4">Criar Anúncio</h2>
+      {message && (
+        <Alert variant="warning">
+          {message}
+        </Alert>
+      )}
+      <div>
+        <div className="form-group">
+          <label className="control-label">Texto do Anúncio</label>
+          <FormControl
+            as="textarea"
+            rows={6}
+            maxLength={200}
+            value={textoAnuncio}
+            onChange={(e) => setTextoAnuncio(e.target.value)}
+          />
         </div>
-    )
-};
+        <Button variant="dark" className="my-2 mx-2" onClick={addAnuncio}>
+          Submeter
+        </Button>
+        <Link to="../../Skills">
+          <Button variant="secondary" className="my-2">
+            Cancelar
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 export default CriarAnunciosSkills;

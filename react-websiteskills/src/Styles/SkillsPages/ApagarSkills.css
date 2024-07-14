@@ -1,0 +1,41 @@
+.header-large {
+    font-size: 2.75rem;
+    font-family: 'Verdana', sans-serif;
+}
+
+.header-medium {
+    font-size: 1.75rem;
+    font-family: 'Verdana', sans-serif;
+}
+
+.small-text dt,
+.small-text dd {
+    font-size: 0.75rem;
+}
+
+.mx-2 {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.my-4 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Ajuste conforme necessário */
+}
+
+.button-container .btn {
+    flex: 1;
+    margin: 0 10px;
+}
