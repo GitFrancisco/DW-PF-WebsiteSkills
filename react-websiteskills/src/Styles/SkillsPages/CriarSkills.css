@@ -1,0 +1,36 @@
+.container {
+    margin-top: 20px;
+  }
+  
+  .text-center {
+    text-align: center;
+    font-size: 2.75rem;
+    font-family: 'Verdana', sans-serif;
+  }
+  
+  .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+
+  .card-body {
+    text-align: center;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  input[type="file"] {
+    display: block;
+    margin: 10px 0;
+  }
+  
+  .btn-dark, .btn-secondary {
+    margin-top: 10px;
+  }
+  

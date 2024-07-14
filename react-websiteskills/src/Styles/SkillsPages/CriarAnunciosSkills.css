@@ -1,0 +1,31 @@
+.container {
+    margin-top: 20px;
+  }
+  
+  .text-center {
+    font-size: 2.75rem;
+    font-family: 'Verdana', sans-serif;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .control-label {
+    font-size: 1.25rem;
+  }
+  
+  .btn-dark, .btn-secondary {
+    margin-top: 10px;
+  }
+  
+  .my-2 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .mx-2 {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
