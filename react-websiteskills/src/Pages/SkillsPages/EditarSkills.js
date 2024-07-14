@@ -5,7 +5,9 @@ import FormControl from 'react-bootstrap/FormControl';
 import "../../Styles/SkillsPages/EditarSkills.css";
 
 function EditarSkills() {
+    // Obter o id da skill a ser editada
     let { skillsId } = useParams();
+    // Obter o histórico de navegação
     let history = useHistory();
 
     // Estados para os campos do formulário
@@ -28,11 +30,6 @@ function EditarSkills() {
         // Enviar a imagem para o servidor
         fetch("https://localhost:7263/api/ApiSkills/UploadImage", {
             method: "POST",
-            headers: {
-                'accept': '*/*',
-                'Content-Type': 'multipart/form-data',
-                Authorization: "Bearer " + localStorage.getItem("jwt")
-            },
             body: formData,
         })
             .then((response) => response.json())
@@ -44,18 +41,28 @@ function EditarSkills() {
             });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    // Método para fazer a edição de uma skill
+
+    const editSkills = () => {
         fetch(`https://localhost:7263/api/ApiSkills/EditSkill?id=${skillsId}`, {
             method: 'POST',
             headers: {
-                'accept': 'text/plain',
-                'Content-Type': 'application/json'
+                'accept': '*/*',
+                'Content-Type': 'application/json',
+                Authorization: "Bearer " + localStorage.getItem("jwt")
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({
+                'nome': skillNome,
+                'dificuldade': skillDificuldade,
+                'tempo': skillTempo,
+                'descricao': skillDescricao,
+                'custo': skillCusto,
+                'imagem': skillImagem
+            })
         })
         .then((response) => {
             if (response.ok) {
+                // Se a edição for bem-sucedida, redirecionar para a lista de skills
                 history.push("../../Skills");
             } else {
                 throw new Error("Erro ao editar a skill");
@@ -75,30 +82,30 @@ function EditarSkills() {
                         <div className="card-body">
                             <h4 className="card-title text-center">Skills</h4>
                             <hr />
-                            <form onSubmit={handleSubmit} encType="multipart/form-data">
+                            <form onSubmit={editSkills} encType="multipart/form-data">
                                 <div className="form-group">
                                     <label>Nome</label>
-                                    <FormControl type="text" name="nome" value={formData.nome} onChange={handleChange} required />
+                                    <FormControl type="text" name="nome" value={skillNome} onChange={(e) => setNome(e.target.value)} required />
                                 </div>
                                 <div className="form-group">
                                     <label>Dificuldade</label>
-                                    <FormControl type="text" name="dificuldade" value={formData.dificuldade} onChange={handleChange} required />
+                                    <FormControl type="text" name="dificuldade" value={skillDificuldade} onChange={(e) => setDificuldade(e.target.value)} required />
                                 </div>
                                 <div className="form-group">
                                     <label>Tempo</label>
-                                    <FormControl type="text" name="tempo" value={formData.tempo} onChange={handleChange} required />
+                                    <FormControl type="text" name="tempo" value={skillTempo} onChange={(e) => setTempo(e.target.value)} required />
                                 </div>
                                 <div className="form-group">
                                     <label>Descrição</label>
-                                    <FormControl type="text" name="descricao" value={formData.descricao} onChange={handleChange} required />
+                                    <FormControl type="text" name="descricao" value={skillDescricao} onChange={(e) => setDescricao(e.target.value)} required />
                                 </div>
                                 <div className="form-group">
                                     <label>Custo</label>
-                                    <FormControl type="text" name="custo" value={formData.custo} onChange={handleChange} required />
+                                    <FormControl type="text" name="custo" value={skillCusto} onChange={(e) => setCusto(e.target.value)} required />
                                 </div>
                                 <div className="form-group">
                                     <label className="d-block mb-2">Escolher Imagem</label>
-                                    <FormControl type="file" name="imagem" onChange={handleChange} accept=".png,.jpg,.jpeg" />
+                                    <FormControl type="file" name="imagem" onChange={handleImageUpload} accept=".png,.jpg,.jpeg" />
                                 </div>
                                 <div className="form-group text-center">
                                     <Button variant="dark" type="submit">Guardar</Button>

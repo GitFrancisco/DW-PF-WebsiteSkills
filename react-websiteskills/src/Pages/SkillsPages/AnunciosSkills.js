@@ -25,7 +25,12 @@ function AnunciosSkills(){
                 Authorization: "Bearer " + localStorage.getItem("jwt")
             }
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.status === 403) {
+                    throw new Error("Forbidden");
+                }
+                return response.json();
+            })
             .then((data) => setAnuncios(data))
             .catch((error) => console.log(error));
     };
