@@ -31,6 +31,11 @@ function EditarSkills(){
         // Enviar a imagem para o servidor
         fetch("https://localhost:7263/api/ApiSkills/UploadImage", {
             method: "POST",
+            headers: {
+                'accept': '*/*',
+                'Content-Type': 'multipart/form-data',
+                Authorization: "Bearer " + localStorage.getItem("jwt")
+            },
             body: formData,
         })
             .then((response) => response.json())

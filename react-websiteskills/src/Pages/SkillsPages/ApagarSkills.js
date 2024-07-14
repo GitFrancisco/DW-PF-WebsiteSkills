@@ -13,7 +13,8 @@ function ApagarSkills() {
         fetch(`https://localhost:7263/api/ApiSkills/DeleteSkill?id=${skillsId}`, {
             method: 'DELETE',
             headers: {
-                'accept': '*/*'
+                'accept': '*/*',
+                Authorization: "Bearer " + localStorage.getItem("jwt")
             }
         })
         .then(response => {

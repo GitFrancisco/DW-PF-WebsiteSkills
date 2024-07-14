@@ -22,6 +22,7 @@ function Skills() {
       .then((data) => setSkills(data))
       .catch((error) => console.log(error));
   };
+  
 
   return (
     <div className="Skills">

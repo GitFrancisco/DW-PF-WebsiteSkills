@@ -23,6 +23,7 @@ function RecursosSkills() {
       {
         headers: {
           accept: "text/plain",
+          Authorization: "Bearer " + localStorage.getItem("jwt")
         },
       }
     )

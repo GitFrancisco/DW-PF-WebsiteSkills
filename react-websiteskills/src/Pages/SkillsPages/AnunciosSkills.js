@@ -19,7 +19,8 @@ function AnunciosSkills(){
     const fetchAnuncios = () => {
         fetch(`https://localhost:7263/api/ApiAnuncios/SkillAnuncios?id=${skillsId}`, {
             headers: {
-                'accept': 'text/plain'
+                'accept': 'text/plain',
+                Authorization: "Bearer " + localStorage.getItem("jwt")
             }
         })
             .then((response) => response.json())
