@@ -1,74 +1,79 @@
-import React, { useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
-import { useParams, useHistory } from "react-router-dom";
-import { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { Card, Button, Row, Col } from 'react-bootstrap';
+import "../../Styles/RecursosPages/DetalhesRecursos.css";
 
-function DetalhesRecursos() {
-  // Obter o id do Recurso
+const DetalhesRecurso = () => {
   let { idRecurso } = useParams();
-  // Obter o histórico de navegação
-  let history = useHistory();
+  const [recurso, setRecurso] = useState(null);
 
-  // Estados para guardar os dados do recurso
-  const [recurso, setRecurso] = useState([]);
-
-  // Metodo para ir buscar um recurso especifico
-  const getRecurso = () => {
+  useEffect(() => {
     fetch(`https://localhost:7263/api/ApiRecursos/GetRecurso?id=${idRecurso}`, {
-        headers: {
-            'accept': 'text/plain'
-        }
+      headers: {
+        'accept': 'text/plain'
+      }
     })
-        .then(response => response.json())
-        .then(data => {
-            // Processar os dados do recurso obtido
-            setRecurso(data);
-        })
-        .catch(error => {
-            console.error(error);
-        });
-};
-    // Chamar o método para obter o recurso
-    useEffect(() => {
-        getRecurso();
-    }, []);
+      .then(response => response.json())
+      .then(data => setRecurso(data))
+      .catch(error => console.error(error));
+  }, [idRecurso]);
 
   return (
-    <div className="ApagarRecurso">
-      <h2>Nome do Recurso</h2>
-      <p>{recurso.nomeRecurso}</p>
-      <h2>Conteúdo do Recurso</h2>
-      {recurso.tipoRecurso === "PDF" && (
-            <div>
-              <embed src={`https://localhost:7263/FicheirosRecursos/${recurso.conteudoRecurso}`} type="application/pdf" width="100%" height="400px" class="mb-3" />
-            </div>
-          )}
-          {recurso.tipoRecurso === "Imagem" && (
-            <div>
-              <img src={`https://localhost:7263/FicheirosRecursos/${recurso.conteudoRecurso}`} alt={recurso.nomeRecurso} width="200" />
-            </div>
-          )}
-          {recurso.tipoRecurso === "Texto" && (
-            <div>
-              <h2>{recurso.nomeRecurso}</h2>
-              <p>{recurso.conteudoRecurso}</p>
-            </div>
-          )}
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-lg-8">
+          <Card className="border-0 shadow-sm mb-4">
+            <Card.Body>
+              <h1 className="text-center title">{recurso?.nomeRecurso}</h1>
+              <hr />
+              <dl className="row">
+                <dt className="col-sm-3 font-weight-bold">Nome do Recurso</dt>
+                <dd className="col-sm-9">{recurso?.nomeRecurso}</dd>
 
-      <h2>Tipo de Recurso</h2>
-      <p>{recurso.tipoRecurso}</p>
-      <h2>Skill</h2>
-      <p>{recurso.skillsFK}</p>
+                <dt className="col-sm-3 font-weight-bold">Conteúdo do Recurso</dt>
+                <dd className="col-sm-9">
+                  {recurso?.tipoRecurso === 'Imagem' ? (
+                    <img
+                      src={`https://localhost:7263/FicheirosRecursos/${recurso.conteudoRecurso}`}
+                      alt={`Imagem referente a ${recurso.nomeRecurso}`}
+                      title={recurso.nomeRecurso}
+                      className="img-fluid"
+                    />
+                  ) : recurso?.tipoRecurso === 'PDF' ? (
+                    <div className="embed-responsive embed-responsive-4by3">
+                      <object
+                        data={`https://localhost:7263/FicheirosRecursos/${recurso.conteudoRecurso}`}
+                        type="application/pdf"
+                        className="embed-responsive-item"
+                        style={{ width: '100%', height: '600px' }}
+                      >
+                        <p>
+                          Seu navegador não suporta visualização de PDF. Você pode{' '}
+                          <a href={`https://localhost:7263/FicheirosRecursos/${recurso.conteudoRecurso}`} target="_blank" rel="noopener noreferrer">
+                            baixar o arquivo
+                          </a>{' '}
+                          manualmente.
+                        </p>
+                      </object>
+                    </div>
+                  ) : (
+                    <p>{recurso?.conteudoRecurso}</p>
+                  )}
+                </dd>
 
-      <Link to={`/RecursosPages/EditarRecursos/${idRecurso}`}>
-        <Button variant="dark">Editar</Button>
-      </Link>
-      <Link to="../../Recursos">
-        <Button variant="secondary">Voltar à lista de Recursos</Button>
-      </Link>
+                <dt className="col-sm-3 font-weight-bold">Tipo de Recurso</dt>
+                <dd className="col-sm-9">{recurso?.tipoRecurso}</dd>
+              </dl>
+            </Card.Body>
+          </Card>
+          <div className="text-center">
+            <Link to={`/Edit/${recurso?.idRecurso}`} className="btn btn-dark mx-2">Editar</Link>
+            <Link to="/Recursos" className="btn btn-secondary mx-2">Voltar à lista de Recursos</Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
-export default DetalhesRecursos;
+export default DetalhesRecurso;

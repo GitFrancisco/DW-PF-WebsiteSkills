@@ -1,0 +1,38 @@
+.container {
+    margin-top: 2rem;
+  }
+  
+  .title {
+    font-size: 2.75rem;
+    font-family: 'Verdana', sans-serif;
+    margin-top: 4rem;
+  }
+  
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .embed-responsive-4by3 {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+    padding-bottom: 75%;
+  }
+  
+  .embed-responsive-item {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  
+  .font-weight-bold {
+    font-weight: bold;
+  }
+  

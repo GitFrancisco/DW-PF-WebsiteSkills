@@ -1,9 +1,7 @@
-import React from "react";
-import "../Styles/Recursos.css";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
-import { useState, useEffect } from "react";
-
+import "../Styles/Recursos.css";
 
 function Recursos() {
   const [recursos, setRecursos] = useState([]);
@@ -23,38 +21,52 @@ function Recursos() {
       .catch((error) => console.log(error));
   };
 
-
-return (
-    <div className="Recursos">
-      <div className="OpcoesRecursos">
-        <h1> Recursos</h1>
+  return (
+    <div className="container">
+      <h1 className="text-center my-4">Recursos</h1>
+      <div className="row mb-3">
+        <div className="col text-right">
+          <Link to="/RecursosPages/CriarRecursos">
+            <Button variant="dark">Criar novo Recurso</Button>
+          </Link>
+        </div>
       </div>
-      <div className="CriaçãoRecurso">
-        <Link to="/RecursosPages/CriarRecursos">
-          <Button variant="dark">Criar Novo Recurso</Button>
-        </Link>
+      <div className="row">
+        <div className="col">
+          <table className="table table-striped table-bordered table-hover text-center table-sm">
+            <thead className="thead-dark">
+              <tr>
+                <th>Nome</th>
+                <th>Conteúdo</th>
+                <th>Tipo</th>
+                <th>Skill</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recursos.map((recurso) => (
+                <tr key={recurso.idRecurso}>
+                  <td>{recurso.nomeRecurso}</td>
+                  <td>{recurso.conteudoRecurso}</td>
+                  <td>{recurso.tipoRecurso}</td>
+                  <td>{recurso.skillsFK}</td>
+                  <td className="d-flex justify-content-center align-items-center">
+                    <Link to={`/RecursosPages/EditarRecursos/${recurso.idRecurso}`}>
+                      <Button variant="secondary" size="sm">Editar</Button>
+                    </Link>
+                    <Link to={`/RecursosPages/DetalhesRecursos/${recurso.idRecurso}`}>
+                      <Button variant="secondary" size="sm">Detalhes</Button>
+                    </Link>
+                    <Link to={`/RecursosPages/ApagarRecursos/${recurso.idRecurso}`}>
+                      <Button variant="secondary" size="sm">Apagar</Button>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-
-      <div>
-          {recursos.map(recursos => (
-            <div key={recursos.idRecurso} className="recursos-item">
-              <h3>{recursos.nomeRecurso}</h3>
-              <p>Conteúdo do Recurso: {recursos.conteudoRecurso}</p>
-              <p>Tipo do Recurso: {recursos.tipoRecurso}</p>
-              <p>Skill associada ao Recurso: {recursos.skillsFK}</p>
-              <Link to={`/RecursosPages/EditarRecursos/${recursos.idRecurso}`}>
-                <Button variant="secondary">Editar</Button>
-              </Link>
-              <Link to={`/RecursosPages/ApagarRecursos/${recursos.idRecurso}`}>
-                <Button variant="secondary">Apagar</Button>
-              </Link>
-              <Link to={`/RecursosPages/DetalhesRecursos/${recursos.idRecurso}`}>
-                <Button variant="secondary">Detalhes</Button>
-              </Link>
-            </div>
-          ))}
-      </div>
-
     </div>
   );
 }

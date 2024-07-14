@@ -1,0 +1,23 @@
+.CriaçãoRecursos {
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+    padding: 20px;
+}
+
+.CriaçãoRecursos h1 {
+    margin-bottom: 20px;
+}
+
+.CriaçãoRecursos h3 {
+    margin-bottom: 20px;
+}
+
+.CriaçãoRecursos p {
+    margin-bottom: 10px;
+}
+
+.CriaçãoRecursos .btn {
+    margin-top: 20px;
+    margin-right: 10px;
+}
