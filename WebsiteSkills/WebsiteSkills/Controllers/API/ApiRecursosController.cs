@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebsiteSkills.Data;
 using WebsiteSkills.Models;
 using WebsiteSkills.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebsiteSkills.Controllers.API
 {
@@ -30,6 +31,7 @@ namespace WebsiteSkills.Controllers.API
         /// <returns></returns>
         [HttpGet]
         [Route("GetAllRecursos")]
+        [Authorize(Roles= "Administrador")]
         public ActionResult<IEnumerable<Recurso>> GetRecursos()
         {
             return _context.Recurso.ToList();
@@ -40,6 +42,7 @@ namespace WebsiteSkills.Controllers.API
         /// </summary>
         [HttpGet]
         [Route("SkillRecursos")]
+        [Authorize(Roles = "Mentor, Aluno")]
         public ActionResult<IEnumerable<Anuncio>> GetAllSkillRecursos(int id)
         {
             var recursos = _context.Recurso.Where(r => r.SkillsFK == id).ToList();
@@ -57,6 +60,7 @@ namespace WebsiteSkills.Controllers.API
         /// <returns></returns>
         [HttpGet]
         [Route("GetRecurso")]
+        [Authorize(Roles = "Mentor, Administrador")]
         public ActionResult<Recurso> GetRecurso(int id)
         {
             var recurso = _context.Recurso.Find(id);
@@ -76,6 +80,7 @@ namespace WebsiteSkills.Controllers.API
         /// <returns></returns>
         [HttpPost]
         [Route("AddRecurso")]
+        [Authorize(Roles = "Mentor, Administrador")]
         public ActionResult<Recurso> PostRecurso([FromBody] RecursoDTO dto)
         {
             Recurso recurso = new Recurso();
@@ -98,6 +103,7 @@ namespace WebsiteSkills.Controllers.API
         /// <returns></returns>
         [HttpPost]
         [Route("EditRecurso")]
+        [Authorize(Roles = "Mentor, Administrador")]
         public IActionResult EditRecurso([FromBody] RecursoDTO dto, [FromQuery] int id)
         {
             // Procurar Skill (existente) na BD
@@ -119,6 +125,7 @@ namespace WebsiteSkills.Controllers.API
         /// <returns></returns>
         [HttpDelete]
         [Route("DeleteRecurso")]
+        [Authorize(Roles = "Mentor, Administrador")]
         public IActionResult DeleteRecurso(int id)
         {
             var recurso = _context.Recurso.Find(id);
@@ -139,6 +146,7 @@ namespace WebsiteSkills.Controllers.API
         /// <param name="file">Ficheiro a ser carregado</param>
         [HttpPost]
         [Route("UploadFile")]
+        [Authorize]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             if (file == null || file.Length == 0)

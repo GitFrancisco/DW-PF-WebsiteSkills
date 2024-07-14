@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebsiteSkills.Data;
 using WebsiteSkills.Models;
 using WebsiteSkills.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebsiteSkills.Controllers.API
 {
@@ -29,6 +30,7 @@ namespace WebsiteSkills.Controllers.API
         /// </summary>
         [HttpGet]
         [Route("GetAllAnuncios")]
+        [Authorize(Roles = "Administrador")]
         public ActionResult<IEnumerable<Anuncio>> GetAllAnuncios()
         {
             return _context.Anuncio.ToList();
@@ -39,6 +41,7 @@ namespace WebsiteSkills.Controllers.API
         /// </summary>
         [HttpGet]
         [Route("SkillAnuncios")]
+        [Authorize(Roles = "Mentor, Aluno")]
         public ActionResult<IEnumerable<Anuncio>> GetAllSkillAnuncios(int id)
         {
             var anuncios = _context.Anuncio.Where(a => a.SkillsFK == id).ToList();
@@ -55,6 +58,7 @@ namespace WebsiteSkills.Controllers.API
         /// <param name="id">ID do anúncio a procurar na BD</param>
         [HttpGet]
         [Route("GetAnuncio")]
+        [Authorize(Roles = "Administrador")]
         public ActionResult<Anuncio> GetAnuncio(int id)
         {
             var anuncio = _context.Anuncio.Find(id);
@@ -69,6 +73,7 @@ namespace WebsiteSkills.Controllers.API
 
         [HttpPost]
         [Route("AddAnuncio")]
+        [Authorize(Roles = "Mentor, Administrador")]
         public ActionResult<Skills> PostAnuncio([FromBody] AnuncioDTO dto, int skillId)
         {
             bool skillExiste = false;

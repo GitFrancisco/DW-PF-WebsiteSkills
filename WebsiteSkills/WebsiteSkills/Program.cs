@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WebsiteSkills.Data;
 
 
@@ -31,13 +34,41 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-        .WithOrigins("http://localhost:3001") // URL do cliente
+        .WithOrigins("http://localhost:3000") // URL do cliente
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials());
 });
 
+// JWT
+var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
+var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+ .AddJwtBearer(options =>
+ {
+     options.TokenValidationParameters = new TokenValidationParameters
+     {
+         ValidateIssuer = true,
+         ValidateAudience = true,
+         ValidateLifetime = true,
+         ValidateIssuerSigningKey = true,
+         ValidIssuer = jwtIssuer,
+         ValidAudience = jwtIssuer,
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+     };
+ });
+// *****
+
+builder.Services.AddAuthorization();
+
+// Adicionar autorização
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireMentorRole", policy => policy.RequireRole("Mentor"));
+    options.AddPolicy("RequireAlunoRole", policy => policy.RequireRole("Aluno"));
+    options.AddPolicy("RequireAdministradorRole", policy => policy.RequireRole("Administrador"));
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -71,6 +102,7 @@ app.UseCors("AllowSpecificOrigin");
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -79,3 +111,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+

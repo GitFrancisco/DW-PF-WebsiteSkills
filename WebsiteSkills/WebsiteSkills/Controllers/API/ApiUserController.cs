@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using WebsiteSkills.Data;
 using WebsiteSkills.Models;
 
@@ -21,9 +25,14 @@ namespace WebsiteSkills.Controllers.API
 
         /// <summary>
         /// Autenticação
-        /// SignInManager é uma classe que faz parte do Identity, que é um sistema   de autenticação.
+        /// SignInManager é uma classe que faz parte do Identity, que é um sistema de autenticação.
         /// </summary>
         public SignInManager<IdentityUser> _signInManager;
+
+        /// <summary>
+        /// appsettings.json
+        /// </summary>
+        private IConfiguration _config;
 
         /// <summary>
         /// Construtor
@@ -33,11 +42,13 @@ namespace WebsiteSkills.Controllers.API
         /// <param name="signInManager">Sign In</param>
         public ApiUserController(ApplicationDbContext context,
                UserManager<IdentityUser> userManager,
-               SignInManager<IdentityUser> signInManager)
+               SignInManager<IdentityUser> signInManager,
+               IConfiguration config)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _config = config;
         }
         /// <summary>
         /// Criar utilizador
@@ -127,13 +138,13 @@ namespace WebsiteSkills.Controllers.API
         /// <param name="email"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Route("loginUser")]
         // Para fazer esta autenticação, é necessário passar o email e a password
         public async Task<ActionResult> SignInUserAsync([FromQuery] string email, [FromQuery] string password)
         {
             // Procura o utilizador na BD
-            IdentityUser user = _userManager.FindByEmailAsync(email).Result;
+            IdentityUser user = await _userManager.FindByEmailAsync(email);
 
             // se o user existir
             if (user != null)
@@ -141,11 +152,38 @@ namespace WebsiteSkills.Controllers.API
                 // Verifica se a password é válida
                 // Se for válida, faz login
                 // Esta verificação que é feita com base na hash da password
-                PasswordVerificationResult passWorks = new PasswordHasher<IdentityUser>().VerifyHashedPassword(null, user.PasswordHash, password);
-                if (passWorks.Equals(PasswordVerificationResult.Success))
+                PasswordVerificationResult passWorks = new PasswordHasher<IdentityUser>().VerifyHashedPassword(user, user.PasswordHash, password);
+                if (passWorks == PasswordVerificationResult.Success)
                 {
-                    await _signInManager.SignInAsync(user, false);
-                    return Ok("O utilizador deu login com sucesso!");
+                    // Obtém a lista de roles do utilizador
+                    var roles = await _userManager.GetRolesAsync(user);
+                    var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+            };
+
+                    // Adiciona as roles como claims
+                    foreach (var role in roles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, role));
+                    }
+
+                    // Se o login for bem sucedido, gera um token (JWT)
+                    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+                    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+                    var Sectoken = new JwtSecurityToken(_config["Jwt:Issuer"],
+                        _config["Jwt:Issuer"],
+                        claims,
+                        expires: DateTime.Now.AddMinutes(120),
+                        signingCredentials: credentials);
+
+                    var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
+
+                    // Devolve o JWT
+                    return Ok(token);
                 }
             }
             // Se não for válido, retorna erro
