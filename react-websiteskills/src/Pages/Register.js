@@ -11,7 +11,7 @@ function Register() {
   const [nome, setNome] = useState("");
   const [dataNasc, setDataNasc] = useState("");
   const [tel, setTel] = useState("");
-  const tipoRegisto = "mentor";
+  const [tipoRegisto, setTipoRegisto] = useState("aluno");
 
   // Método para registar utilizador
   const registerUser = () => {
@@ -37,7 +37,7 @@ function Register() {
 
   return (
     <div>
-      <h2>Login</h2>
+      <h2>Registar</h2>
       <label htmlFor="email">Email:</label>
       <input
         type="email"
@@ -62,6 +62,12 @@ function Register() {
 
       <label htmlFor="Telemovel">Telemóvel:</label>
       <input value={tel} onChange={(e) => setTel(e.target.value)} />
+
+      <label htmlFor="tipoRegisto">Tipo de Registo:</label>
+      <select id="tipoRegisto" value={tipoRegisto} onChange={(e) => setTipoRegisto(e.target.value)}>
+         <option value="mentor">Mentor</option>
+         <option value="aluno">Aluno</option>
+      </select>
 
       <button onClick={registerUser}>Registar</button>
     </div>
