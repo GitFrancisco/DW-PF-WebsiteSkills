@@ -3,11 +3,11 @@
 }
 
 <style>
-    body, html {
-        margin: 0;
-        padding: 0;
+    html, body {
         height: 100%;
         width: 100%;
+        margin: 0;
+        padding: 0;
     }
 
     .navbar {
@@ -18,16 +18,17 @@
 
     .background-image {
         background-image: url('@Url.Content("~/imagens/Background_MP.png")');
-        background-size: cover;
-        background-position: center;
-        height: 81.4vh;
+        background-size: cover; 
+        background-position: center; 
+        background-attachment: fixed; /
+        height: 100vh; 
         width: 100vw;
         display: flex;
         justify-content: center;
         align-items: center;
-        position: relative;
-        top:-16px;
-        right:96px;
+        position: absolute;
+        top: 0;
+        left: 0;
     }
 
     .text-content {
