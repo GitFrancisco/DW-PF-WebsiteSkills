@@ -4,14 +4,19 @@ import { Card, Button } from "react-bootstrap";
 import "../../Styles/RecursosPages/ApagarRecursos.css";
 
 const ApagarRecursos = () => {
+  // Obter o id do recurso a ser apagado
   let { idRecurso } = useParams();
+  // Obter o histórico de navegação
   let history = useHistory();
+  // Estado para guardar o recurso
   const [recurso, setRecurso] = useState(null);
 
+  // Obter o recurso a ser apagado
   useEffect(() => {
     fetch(`https://localhost:7263/api/ApiRecursos/GetRecurso?id=${idRecurso}`, {
       headers: {
-        'accept': 'text/plain'
+        'accept': 'text/plain',
+        'Authorization': "Bearer " + localStorage.getItem("jwt")
       }
     })
       .then(response => response.json())
@@ -19,11 +24,13 @@ const ApagarRecursos = () => {
       .catch(error => console.error(error));
   }, [idRecurso]);
 
+  // Apagar o recurso
   const deleteRecurso = () => {
     fetch(`https://localhost:7263/api/ApiRecursos/DeleteRecurso?id=${idRecurso}`, {
       method: 'DELETE',
       headers: {
-        'accept': '*/*'
+        'accept': '*/*',
+        'Authorization': "Bearer " + localStorage.getItem("jwt")
       }
     })
       .then(response => {
