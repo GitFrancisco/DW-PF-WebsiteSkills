@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import "../Styles/Login.css";
 
 function Login() {
   // Obter o histórico de navegação
@@ -42,25 +45,46 @@ function Login() {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <label htmlFor="email">Email:</label>
-      <input
-        type="email"
-        id="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+    <div className="login-container">
+      <h2 className="text-center my-4">Entrar</h2>
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card shadow-sm p-4 mb-4 bg-white rounded">
+            <div className="card-body">
+              <Form onSubmit={(e) => {
+                e.preventDefault();
+                loginUser();
+              }}>
+                <Form.Group controlId="formBasicEmail">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </Form.Group>
 
-      <label htmlFor="password">Password:</label>
-      <input
-        type="password"
-        id="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+                <Form.Group controlId="formBasicPassword">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </Form.Group>
 
-      <button onClick={loginUser}>Login</button>
+                <Button variant="dark" type="submit" className="w-100">
+                  Entrar
+                </Button>
+              </Form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

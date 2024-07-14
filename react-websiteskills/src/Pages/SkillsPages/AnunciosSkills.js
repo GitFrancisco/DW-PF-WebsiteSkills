@@ -1,8 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useParams, useHistory } from 'react-router-dom';
-import "../../Styles/SkillsPages/AnunciosSkills.css";
-
 
 
 function AnunciosSkills(){
@@ -22,15 +20,9 @@ function AnunciosSkills(){
         fetch(`https://localhost:7263/api/ApiAnuncios/SkillAnuncios?id=${skillsId}`, {
             headers: {
                 'accept': 'text/plain',
-                Authorization: "Bearer " + localStorage.getItem("jwt")
             }
         })
-            .then((response) => {
-                if (response.status === 403) {
-                    throw new Error("Forbidden");
-                }
-                return response.json();
-            })
+            .then((response) => response.json())
             .then((data) => setAnuncios(data))
             .catch((error) => console.log(error));
     };

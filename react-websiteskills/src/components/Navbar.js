@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import '../Styles/Navbar.css';
 import '@fortawesome/fontawesome-free/css/all.css';
+import Button from "react-bootstrap/Button";
 
 function Navbar() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,7 +34,7 @@ function Navbar() {
             </div>
             <div className="right-links">
                 {isAuthenticated ? (
-                    <button onClick={handleLogout}>Sair</button>
+                    <Button variant="secondary" className="mx-3 my-1" onClick={handleLogout}>Sair</Button>
                 ) : (
                     <>
                         <Link to="/Login">Entrar</Link>

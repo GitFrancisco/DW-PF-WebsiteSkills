@@ -68,7 +68,7 @@ const DetalhesRecurso = () => {
             </Card.Body>
           </Card>
           <div className="text-center">
-            <Link to={`/Edit/${recurso?.idRecurso}`} className="btn btn-dark mx-2">Editar</Link>
+            <Link to={`/RecursosPages/EditarRecursos/${recurso?.idRecurso}`} className="btn btn-dark mx-2">Editar</Link>
             <Link to="/Recursos" className="btn btn-secondary mx-2">Voltar à lista de Recursos</Link>
           </div>
         </div>
